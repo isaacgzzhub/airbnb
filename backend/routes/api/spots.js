@@ -1,9 +1,9 @@
 const express = require('express');
 const { check } = require('express-validator');
-const { handleValidationErrors } = require('../../utils/validation');
+const { handleValidationErrors, asyncHandler, validateSpotOwnership } = require('../../utils/validation');
 
 const { requireAuth } = require("../../utils/auth.js");
-const { Spot } = require('../../db/models');
+const { Spot, SpotImage } = require('../../db/models');
 
 const router = express.Router();
 
@@ -82,5 +82,32 @@ router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
       });
   }
 });
+
+const validateImage = [
+  check('url')
+    .exists({ checkFalsy: true })
+    .withMessage('Image URL is required'),
+  handleValidationErrors
+];
+
+router.post('/:spotId/images',
+  validateImage,
+  validateSpotOwnership,
+  asyncHandler(async (req, res) => {
+    const { url, preview } = req.body;
+    const { spotId } = req.params;
+
+    const image = await SpotImage.create({
+      spotId,
+      url,
+      preview
+    });
+
+    res.status(200).json({
+      id: image.id,
+      url: image.url,
+      preview: image.preview
+    });
+}));
 
 module.exports = router;
