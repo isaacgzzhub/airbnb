@@ -86,7 +86,13 @@ router.get(
         username: user.username,
       };
       return res.json({
-        user: safeUser
+        user: {
+          id: req.user.id,
+          firstName: req.user.firstName,
+          lastName: req.user.lastName,
+          email: req.user.email,
+          username: req.user.username
+        }
       });
     } else return res.json({ user: null });
   }
