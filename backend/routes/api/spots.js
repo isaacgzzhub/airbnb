@@ -370,4 +370,38 @@ router.get('/:spotId/bookings', requireAuth, restoreUser, asyncHandler(async fun
   }
 }));
 
+router.get('/', asyncHandler(async (req, res) => {
+  // Query Parameters
+  const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+  // Check Query Params for Errors
+  if (isNaN(page) || page < 1 || page > 10) {
+    return res.status(400).json({ message: "Bad Request", errors: { page: "Page must be greater than or equal to 1 and less than or equal to 10" } });
+  }
+
+  if (isNaN(size) || size < 1 || size > 20) {
+    return res.status(400).json({ message: "Bad Request", errors: { size: "Size must be greater than or equal to 1 and less than or equal to 20" } });
+  }
+
+  // Construct Filtering Conditions
+  const conditions = {
+    offset: (page - 1) * size,
+    limit: size
+  };
+
+  conditions.where = {};
+
+  if (minLat && !isNaN(minLat)) conditions.where.lat = { [Op.gte]: minLat };
+  if (maxLat && !isNaN(maxLat)) conditions.where.lat = { ...(conditions.where.lat || {}), [Op.lte]: maxLat };
+  if (minLng && !isNaN(minLng)) conditions.where.lng = { [Op.gte]: minLng };
+  if (maxLng && !isNaN(maxLng)) conditions.where.lng = { ...(conditions.where.lng || {}), [Op.lte]: maxLng };
+  if (minPrice && !isNaN(minPrice) && minPrice >= 0) conditions.where.price = { [Op.gte]: minPrice };
+  if (maxPrice && !isNaN(maxPrice) && maxPrice >= 0) conditions.where.price = { ...(conditions.where.price || {}), [Op.lte]: maxPrice };
+
+  // Fetch and return Spots
+  const spots = await Spot.findAll(conditions);
+
+  res.json({ Spots: spots, page: parseInt(page, 10), size: parseInt(size, 10) });
+}));
+
 module.exports = router;
