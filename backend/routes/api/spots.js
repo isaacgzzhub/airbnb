@@ -3,7 +3,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors, asyncHandler, validateSpotOwnership } = require('../../utils/validation');
 
 const { requireAuth } = require("../../utils/auth.js");
-const { Spot, SpotImage, Review } = require('../../db/models');
+const { Spot, SpotImage, Review, User } = require('../../db/models');
 
 const router = express.Router();
 
@@ -155,6 +155,35 @@ router.get('/current', requireAuth, asyncHandler(async (req, res) => {
 
   res.json({ Spots: spots });
 }));
+
+router.get(
+  '/:id(\\d+)',
+  asyncHandler(async (req, res) => {
+    const spotId = parseInt(req.params.id, 10);
+    const spot = await Spot.findByPk(spotId, {
+      include: [
+        { model: SpotImage },
+        { model: User, as: 'Owner', attributes: ['id', 'firstName', 'lastName'] },
+      ],
+    });
+
+    if (!spot) {
+      return res.status(404).json({ message: "Spot couldn't be found" });
+    }
+
+    const reviews = await Review.findAll({ where: { spotId } });
+    const numReviews = reviews.length;
+    const avgStarRating = await spot.getAvgRating();
+
+    // Include the rating in the response
+    res.json({
+      ...spot.toJSON(),
+      numReviews,
+      avgStarRating,
+    });
+  }),
+);
+
 
 
 module.exports = router;
