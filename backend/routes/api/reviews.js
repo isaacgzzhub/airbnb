@@ -3,9 +3,47 @@ const { check } = require('express-validator');
 const { asyncHandler } = require('../../utils/validation');
 
 const { requireAuth } = require("../../utils/auth.js");
-const { Spot, Review, ReviewImage } = require('../../db/models');
+const { User, Spot, Review, ReviewImage } = require('../../db/models');
 
 const router = express.Router({ mergeParams: true });
+
+router.get('/current', requireAuth, asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+
+  let reviews = await Review.findAll({
+    where: { userId },
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
+      },
+      {
+        model: Spot,
+        attributes: ['id', 'ownerId', 'address', 'city', 'state', 'country', 'lat', 'lng', 'name', 'price']
+      },
+      {
+        model: ReviewImage,
+        as: 'ReviewImages',
+        attributes: ['id', 'url'],
+      },
+    ],
+    order: [['createdAt', 'DESC']],
+  });
+
+  reviews = reviews.map(review => {
+    const plainReview = review.get({ plain: true });
+
+    if (plainReview.ReviewImages && plainReview.ReviewImages.length > 0) {
+      plainReview.Spot.previewImage = plainReview.ReviewImages[0].url;
+    } else {
+      plainReview.Spot.previewImage = 'defaultImageURL';
+    }
+
+    return plainReview;
+  });
+
+  res.json({ Reviews: reviews });
+}));
 
 router.post('/:reviewId/images', requireAuth, asyncHandler(async (req, res, next) => {
   const { url } = req.body;
