@@ -281,7 +281,7 @@ const bookingValidators = [
     .withMessage('End date cannot be on or before start date'),
 ];
 
-router.post('/:spotId/bookings', restoreUser, bookingValidators, asyncHandler(async (req, res) => {
+router.post('/:spotId/bookings', restoreUser, requireAuth, bookingValidators, asyncHandler(async (req, res) => {
   const validationErrors = validationResult(req);
   const { spotId } = req.params;
   const { startDate, endDate } = req.body;
