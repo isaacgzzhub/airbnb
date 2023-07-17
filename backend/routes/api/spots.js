@@ -333,4 +333,41 @@ router.post('/:spotId/bookings', restoreUser, requireAuth, bookingValidators, as
   res.json(newBooking);
 }));
 
+router.get('/:spotId/bookings', requireAuth, restoreUser, asyncHandler(async function(req, res) {
+  const spotId = req.params.spotId;
+  const userId = req.user.id; // req.user.id should hold the id of the currently authenticated user
+
+  // Check if the spot exists
+  const spot = await Spot.findByPk(spotId);
+  if (!spot) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
+
+  // Check if the requester is the owner of the spot
+  const isOwner = spot.ownerId === userId;
+
+  if (isOwner) {
+    // If the requester is the owner, fetch all booking details and associated user information
+    const bookings = await Booking.findAll({
+      where: { spotId: spotId },
+      include: [{
+        model: User,
+        attributes: ['id', 'firstName', 'lastName'],
+      }],
+      order: [['createdAt', 'DESC']] // latest booking first
+    });
+
+    return res.json({ Bookings: bookings });
+  } else {
+    // If the requester is not the owner, fetch only spotId, startDate, and endDate
+    const bookings = await Booking.findAll({
+      where: { spotId: spotId },
+      attributes: ['spotId', 'startDate', 'endDate'],
+      order: [['startDate', 'ASC']] // earliest booking first
+    });
+
+    return res.json({ Bookings: bookings });
+  }
+}));
+
 module.exports = router;
