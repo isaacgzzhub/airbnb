@@ -42,8 +42,29 @@ function asyncHandler(handler) {
   }
 }
 
+function validateReviewData(req, res, next) {
+  const { review, stars } = req.body;
+
+  let errors = {};
+
+  if (!review) {
+    errors.review = 'Review text is required';
+  }
+
+  if (!stars || typeof stars !== 'number' || stars < 1 || stars > 5) {
+    errors.stars = 'Stars must be an integer from 1 to 5';
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.status(400).json({ message: 'Bad Request', errors });
+  }
+
+  next();
+}
+
 module.exports = {
   handleValidationErrors,
   validateSpotOwnership,
+  validateReviewData,
   asyncHandler
 };
