@@ -3,7 +3,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors, asyncHandler, validateSpotOwnership, validateReviewData } = require('../../utils/validation');
 
 const { requireAuth } = require("../../utils/auth.js");
-const { Spot, SpotImage, Review, User } = require('../../db/models');
+const { Spot, SpotImage, Review, User, ReviewImage } = require('../../db/models');
 
 const router = express.Router();
 
@@ -232,6 +232,35 @@ router.post('/:spotId/reviews', requireAuth, validateReviewData, asyncHandler(as
     createdAt: newReview.createdAt,
     updatedAt: newReview.updatedAt
   });
+}));
+
+router.get('/:spotId/reviews', asyncHandler(async (req, res) => {
+  const { spotId } = req.params;
+
+  // First check if the spot exists
+  const spot = await Spot.findByPk(spotId);
+  if (!spot) {
+    return res.status(404).json({ message: "Spot couldn't be found" });
+  }
+
+  // Fetch the reviews for the spot
+  const reviews = await Review.findAll({
+    where: { spotId },
+    include: [
+      {
+        model: User,
+        attributes: ['id', 'firstName', 'lastName']
+      },
+      {
+        model: ReviewImage,
+        as: 'ReviewImages',
+        attributes: ['id', 'url']
+      }
+    ],
+    order: [['createdAt', 'DESC']]
+  });
+
+  res.json({ Reviews: reviews });
 }));
 
 module.exports = router;
