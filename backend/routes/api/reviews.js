@@ -1,39 +1,41 @@
 const express = require('express');
 const { check } = require('express-validator');
-const { asyncHandler, validateReviewData } = require('../../utils/validation');
+const { asyncHandler } = require('../../utils/validation');
 
 const { requireAuth } = require("../../utils/auth.js");
-const { Spot, Review } = require('../../db/models');
+const { Spot, Review, ReviewImage } = require('../../db/models');
 
 const router = express.Router({ mergeParams: true });
 
-router.post('/', requireAuth, validateReviewData, asyncHandler(async (req, res) => {
-  const { review, stars } = req.body;
-  const { spotId } = req.params;
-  const userId = req.user.id;
+router.post('/:reviewId/images', requireAuth, asyncHandler(async (req, res, next) => {
+  const { url } = req.body;
+  const { reviewId } = req.params;
 
-  const spot = await Spot.findByPk(spotId);
+  // Fetch the review
+  const review = await Review.findByPk(reviewId);
 
-  if (!spot) {
-    return res.status(404).json({ message: 'Spot couldn\'t be found' });
+  if (!review) {
+    return res.status(404).json({ message: 'Review couldn\'t be found' });
   }
 
-  const existingReview = await Review.findOne({ where: { userId, spotId } });
-
-  if (existingReview) {
-    return res.status(403).json({ message: 'User already has a review for this spot' });
+  // Verify that the review belongs to the current user
+  if (req.user.id !== review.userId) {
+    return res.status(403).json({ message: 'Unauthorized to add an image to this review' });
   }
 
-  const newReview = await Review.create({ userId, spotId, review, stars });
+  // Check if the review already has the maximum number of images
+  const images = await ReviewImage.findAll({ where: { reviewId } });
 
-  res.status(201).json({
-    id: newReview.id,
-    userId: newReview.userId,
-    spotId: newReview.spotId,
-    review: newReview.review,
-    stars: newReview.stars,
-    createdAt: newReview.createdAt,
-    updatedAt: newReview.updatedAt
+  if (images.length >= 10) {
+    return res.status(403).json({ message: 'Maximum number of images for this resource was reached' });
+  }
+
+  // Create a new image
+  const image = await ReviewImage.create({ url, reviewId });
+
+  res.status(200).json({
+    id: image.id,
+    url: image.url
   });
 }));
 
