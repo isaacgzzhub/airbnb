@@ -3,7 +3,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors, asyncHandler, validateSpotOwnership } = require('../../utils/validation');
 
 const { requireAuth } = require("../../utils/auth.js");
-const { Spot, SpotImage } = require('../../db/models');
+const { Spot, SpotImage, Review } = require('../../db/models');
 
 const router = express.Router();
 
@@ -109,5 +109,52 @@ router.post('/:spotId/images',
       preview: image.preview
     });
 }));
+
+router.get('/current', requireAuth, asyncHandler(async (req, res) => {
+  const userId = req.user.id;
+  const spots = await Spot.findAll({
+      where: {
+          ownerId: userId
+      },
+      include: [
+          {
+              model: SpotImage,
+              attributes: ['url'], // Assuming that 'url' is where the image is stored
+          },
+          {
+              model: Review, // Include Reviews to calculate 'avgRating'
+          }
+      ],
+      attributes: [
+          'id',
+          'ownerId',
+          'address',
+          'city',
+          'state',
+          'country',
+          'lat',
+          'lng',
+          'name',
+          'description',
+          'price',
+          'createdAt',
+          'updatedAt',
+          'avgRating' // make sure 'avgRating' is correctly handled within the model
+      ]
+  });
+
+  spots.forEach(spot => {
+    if (spot.SpotImages && spot.SpotImages[0]) {
+      spot.dataValues.previewImage = spot.SpotImages[0].url;
+      delete spot.dataValues.SpotImages;
+    } else {
+      spot.dataValues.previewImage = null;
+    }
+    delete spot.dataValues.Reviews;  // delete the 'Reviews' attribute
+  });
+
+  res.json({ Spots: spots });
+}));
+
 
 module.exports = router;
