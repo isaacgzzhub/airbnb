@@ -1,8 +1,8 @@
 const express = require('express');
-const { check } = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const { asyncHandler } = require('../../utils/validation');
 
-const { requireAuth } = require("../../utils/auth.js");
+const { requireAuth, restoreUser } = require("../../utils/auth.js");
 const { User, Spot, Review, ReviewImage } = require('../../db/models');
 
 const router = express.Router({ mergeParams: true });
@@ -75,6 +75,43 @@ router.post('/:reviewId/images', requireAuth, asyncHandler(async (req, res, next
     id: image.id,
     url: image.url
   });
+}));
+
+const reviewValidators = [
+  check('review')
+    .exists({ checkFalsy: true })
+    .withMessage('Review text is required'),
+  check('stars')
+    .isInt({ min: 1, max: 5 })
+    .withMessage('Stars must be an integer from 1 to 5')
+];
+
+router.put('/:reviewId', requireAuth, restoreUser, reviewValidators, asyncHandler(async (req, res) => {
+  const validationErrors = validationResult(req);
+  const { reviewId } = req.params;
+  const { review, stars } = req.body;
+
+  if (!validationErrors.isEmpty()) {
+    const errors = validationErrors.array().map((error) => error.msg);
+    return res.status(400).json({ message: "Bad Request", errors });
+  }
+
+  const reviewToUpdate = await Review.findByPk(reviewId);
+
+  if (!reviewToUpdate) {
+    return res.status(404).json({ message: "Review couldn't be found" });
+  }
+
+  if (req.user.id !== reviewToUpdate.userId) {
+    return res.status(403).json({ message: "User is not authorized to update this review" });
+  }
+
+  reviewToUpdate.review = review;
+  reviewToUpdate.stars = stars;
+
+  await reviewToUpdate.save();
+
+  res.json(reviewToUpdate);
 }));
 
 module.exports = router;
