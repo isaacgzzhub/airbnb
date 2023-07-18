@@ -92,18 +92,12 @@ const checkReviewOwnership = async function(req, res, next) {
 }
 
 const checkSpotOwnership = async function(req, res, next) {
-  const imageId = req.params.imageId;
+  const spotId = req.params.spotId;
   try {
-      const spotImage = await SpotImage.findByPk(imageId);
-
-      if (!spotImage) {
-          return res.status(404).json({ message: "Spot Image couldn't be found" });
-      }
-
-      const spot = await Spot.findByPk(spotImage.spotId);
+      const spot = await Spot.findByPk(spotId);
 
       if (!spot) {
-          return res.status(404).json({ message: 'Spot not found' });
+          return res.status(404).json({ message: "Spot couldn't be found" });
       }
 
       // Ensure the user owns the spot
@@ -111,7 +105,6 @@ const checkSpotOwnership = async function(req, res, next) {
           return res.status(403).json({ message: 'Not authorized' });
       }
 
-      // If the user owns the spot, pass control to the next middleware
       next();
   } catch (err) {
       console.error(err);

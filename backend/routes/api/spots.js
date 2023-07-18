@@ -3,7 +3,7 @@ const { check, validationResult } = require('express-validator');
 const { Op } = require('sequelize');
 const { handleValidationErrors, asyncHandler, validateSpotOwnership, validateReviewData } = require('../../utils/validation');
 
-const { requireAuth, restoreUser } = require("../../utils/auth.js");
+const { requireAuth, restoreUser, checkSpotOwnership } = require("../../utils/auth.js");
 const { Spot, SpotImage, Review, User, ReviewImage, Booking } = require('../../db/models');
 
 const router = express.Router();
@@ -403,5 +403,27 @@ router.get('/', asyncHandler(async (req, res) => {
 
   res.json({ Spots: spots, page: parseInt(page, 10), size: parseInt(size, 10) });
 }));
+
+router.delete('/:spotId', requireAuth, checkSpotOwnership, async (req, res) => {
+  const { spotId } = req.params;
+
+  try {
+      const spot = await Spot.findByPk(spotId);
+
+      if (!spot) {
+          return res.status(404).json({
+              message: "Spot couldn't be found",
+          });
+      }
+
+      await spot.destroy();
+
+      return res.json({ message: 'Successfully deleted' });
+
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server Error" });
+  }
+});
 
 module.exports = router;
