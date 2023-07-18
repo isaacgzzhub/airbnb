@@ -2,7 +2,7 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const { asyncHandler } = require('../../utils/validation');
 
-const { requireAuth, restoreUser } = require("../../utils/auth.js");
+const { requireAuth, restoreUser, checkReviewOwnership } = require("../../utils/auth.js");
 const { User, Spot, Review, ReviewImage } = require('../../db/models');
 
 const router = express.Router({ mergeParams: true });
@@ -113,5 +113,27 @@ router.put('/:reviewId', requireAuth, restoreUser, reviewValidators, asyncHandle
 
   res.json(reviewToUpdate);
 }));
+
+router.delete('/:reviewId', requireAuth, checkReviewOwnership, async (req, res) => {
+  const { reviewId } = req.params;
+
+  try {
+      const review = await Review.findByPk(reviewId);
+
+      if (!review) {
+          return res.status(404).json({
+              message: "Review couldn't be found",
+          });
+      }
+
+      await review.destroy();
+
+      return res.json({ message: 'Successfully deleted' });
+
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Server Error" });
+  }
+});
 
 module.exports = router;

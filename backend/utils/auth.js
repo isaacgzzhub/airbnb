@@ -69,14 +69,14 @@ const requireAuth = function (req, _res, next) {
 }
 
 const checkReviewOwnership = async function(req, res, next) {
-  const reviewId = req.params.imageId;
+  const reviewId = req.params.reviewId;
   try {
-      const review = await Review.findByPk(reviewId); // change here
+      const review = await Review.findByPk(reviewId);
 
       console.log(review);
 
       if (!review) {
-          return res.status(404).json({ message: 'Review not found' });
+          return res.status(404).json({ message: "Review couldn't be found" });
       }
 
       // Ensure the user owns the review
