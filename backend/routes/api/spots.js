@@ -154,10 +154,10 @@ router.get('/current', requireAuth, asyncHandler(async (req, res) => {
       include: [
           {
               model: SpotImage,
-              attributes: ['url'], // Assuming that 'url' is where the image is stored
+              attributes: ['url'],
           },
           {
-              model: Review, // Include Reviews to calculate 'avgRating'
+              model: Review,
           }
       ],
       attributes: [
@@ -173,22 +173,36 @@ router.get('/current', requireAuth, asyncHandler(async (req, res) => {
           'description',
           'price',
           'createdAt',
-          'updatedAt',
-          'avgRating' // make sure 'avgRating' is correctly handled within the model
+          'updatedAt'
       ]
   });
 
-  spots.forEach(spot => {
-    if (spot.SpotImages && spot.SpotImages[0]) {
-      spot.dataValues.previewImage = spot.SpotImages[0].url;
-      delete spot.dataValues.SpotImages;
+  const spotsPlain = spots.map(spot => {
+    const spotPlain = spot.get({ plain: true });
+
+    // Assign preview image
+    if (spotPlain.SpotImages && spotPlain.SpotImages[0]) {
+      spotPlain.previewImage = spotPlain.SpotImages[0].url;
     } else {
-      spot.dataValues.previewImage = null;
+      spotPlain.previewImage = 'default-image-url';
     }
-    delete spot.dataValues.Reviews;  // delete the 'Reviews' attribute
+    delete spotPlain.SpotImages;
+
+    // Calculate average rating
+    if (spotPlain.Reviews && spotPlain.Reviews.length > 0) {
+      const sum = spotPlain.Reviews.reduce((acc, review) => acc + review.stars, 0);
+      spotPlain.avgRating = sum / spotPlain.Reviews.length;
+    } else {
+      spotPlain.avgRating = null;
+    }
+    delete spotPlain.Reviews;
+
+    // Reorder attributes: move 'avgRating' before 'previewImage'
+    const { avgRating, previewImage, ...rest } = spotPlain;
+    return { ...rest, avgRating, previewImage };
   });
 
-  res.json({ Spots: spots });
+  res.json({ Spots: spotsPlain });
 }));
 
 router.get(
