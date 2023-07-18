@@ -44,10 +44,44 @@ const validateCreateSpot = [
   handleValidationErrors
 ];
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
-    const Spots = await Spot.findAll();
-    return res.json({ Spots });
+    const spots = await Spot.findAll();
+
+    // Prepare an array of promises for getting avgRating and previewImage for each spot
+    const spotsWithRatingAndImagePromises = spots.map(async (spot) => {
+      const spotJson = spot.toJSON();  // Convert Sequelize instance to plain JavaScript object
+
+      // Calculate average rating
+      const reviews = await Review.findAll({
+        where: {
+          spotId: spot.id
+        }
+      });
+
+      if (reviews.length > 0) {
+        const sum = reviews.reduce((acc, review) => acc + review.stars, 0);
+        spotJson.avgRating = sum / reviews.length;
+      } else {
+        spotJson.avgRating = null;  // or set a default value
+      }
+
+      // Get preview image
+      const image = await SpotImage.findOne({
+        where: {
+          spotId: spot.id
+        }
+      });
+
+      spotJson.previewImage = image ? image.url : 'default-image-url'; // set your default image url
+
+      return spotJson;
+    });
+
+    // Wait for all promises to resolve
+    const spotsWithRatingAndImage = await Promise.all(spotsWithRatingAndImagePromises);
+
+    return res.status(200).json({ Spots: spotsWithRatingAndImage });
   } catch (err) {
     next(err);  // Pass errors to your error-handling middleware
   }

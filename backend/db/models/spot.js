@@ -68,29 +68,10 @@ module.exports = (sequelize, DataTypes) => {
     price: {
       type: DataTypes.DECIMAL,
       allowNull: false
-    },
-    avgRating: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        return this.getAvgRating();
-      },
-      async set() {
-        throw new Error('Do not try to set the `avgRating` value!');
-      }
     }
   }, {
     sequelize,
     modelName: 'Spot',
   });
-
-  Spot.prototype.getAvgRating = async function() {
-    const reviews = await this.getReviews();
-    if (!reviews.length) {
-      return 0;  // or whatever default value you want
-    }
-    const sum = reviews.reduce((acc, curr) => acc + curr.stars, 0);
-    return sum / reviews.length;
-  }
-
   return Spot;
 };
