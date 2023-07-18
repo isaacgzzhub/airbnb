@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Review.hasMany(models.ReviewImage,
         {
           foreignKey: 'reviewId',
-          onDelete: 'Cascade'
+          onDelete: 'CASCADE'
         }),
       Review.belongsTo(models.User, { foreignKey: 'userId' }),
       Review.belongsTo(models.Spot, { foreignKey: 'spotId' })
