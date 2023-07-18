@@ -211,8 +211,9 @@ router.get(
     const spotId = parseInt(req.params.id, 10);
     const spot = await Spot.findByPk(spotId, {
       include: [
-        { model: SpotImage },
+        { model: SpotImage, attributes: ['id', 'url', 'preview'] },
         { model: User, as: 'Owner', attributes: ['id', 'firstName', 'lastName'] },
+        { model: Review },
       ],
     });
 
@@ -220,16 +221,41 @@ router.get(
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    const reviews = await Review.findAll({ where: { spotId } });
-    const numReviews = reviews.length;
-    const avgStarRating = await spot.getAvgRating();
+    // Calculate number of reviews and average rating
+    const numReviews = spot.Reviews.length;
+    let avgStarRating = 0;
 
-    // Include the rating in the response
-    res.json({
-      ...spot.toJSON(),
-      numReviews,
-      avgStarRating,
-    });
+    if (numReviews > 0) {
+      const sumStars = spot.Reviews.reduce((sum, review) => sum + review.stars, 0);
+      avgStarRating = sumStars / numReviews;
+    }
+
+    // Exclude Review model from the response
+    const spotPlain = spot.get({ plain: true });
+    delete spotPlain.Reviews;
+
+    // Manual creation of new object to ensure order
+    const orderedSpot = {
+      id: spotPlain.id,
+      ownerId: spotPlain.ownerId,
+      address: spotPlain.address,
+      city: spotPlain.city,
+      state: spotPlain.state,
+      country: spotPlain.country,
+      lat: spotPlain.lat,
+      lng: spotPlain.lng,
+      name: spotPlain.name,
+      description: spotPlain.description,
+      price: spotPlain.price,
+      createdAt: spotPlain.createdAt,
+      updatedAt: spotPlain.updatedAt,
+      numReviews: numReviews,
+      avgStarRating: avgStarRating,
+      SpotImages: spotPlain.SpotImages,
+      Owner: spotPlain.Owner
+    };
+
+    res.json(orderedSpot);
   }),
 );
 
