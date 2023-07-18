@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User } = require('../db/models');
+const { User, Review } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
@@ -68,4 +68,27 @@ const requireAuth = function (req, _res, next) {
   return next(err);
 }
 
-module.exports = { setTokenCookie, restoreUser, requireAuth };
+const checkReviewOwnership = async function(req, res, next) {
+  const reviewId = req.params.imageId;
+  try {
+      const review = await Review.findByPk(reviewId); // change here
+
+      console.log(review);
+
+      if (!review) {
+          return res.status(404).json({ message: 'Review not found' });
+      }
+
+      // Ensure the user owns the review
+      if (req.user.id !== review.userId) {
+          return res.status(403).json({ message: 'Not authorized' });
+      }
+
+      next();
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+  }
+}
+
+module.exports = { setTokenCookie, restoreUser, requireAuth, checkReviewOwnership };
