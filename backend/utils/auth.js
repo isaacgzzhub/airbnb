@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { jwtConfig } = require('../config');
-const { User, Review } = require('../db/models');
+const { User, Review, Spot, SpotImage } = require('../db/models');
 
 const { secret, expiresIn } = jwtConfig;
 
@@ -91,4 +91,32 @@ const checkReviewOwnership = async function(req, res, next) {
   }
 }
 
-module.exports = { setTokenCookie, restoreUser, requireAuth, checkReviewOwnership };
+const checkSpotOwnership = async function(req, res, next) {
+  const imageId = req.params.imageId;
+  try {
+      const spotImage = await SpotImage.findByPk(imageId);
+
+      if (!spotImage) {
+          return res.status(404).json({ message: "Spot Image couldn't be found" });
+      }
+
+      const spot = await Spot.findByPk(spotImage.spotId);
+
+      if (!spot) {
+          return res.status(404).json({ message: 'Spot not found' });
+      }
+
+      // Ensure the user owns the spot
+      if (req.user.id !== spot.ownerId) {
+          return res.status(403).json({ message: 'Not authorized' });
+      }
+
+      // If the user owns the spot, pass control to the next middleware
+      next();
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+  }
+}
+
+module.exports = { setTokenCookie, restoreUser, requireAuth, checkReviewOwnership, checkSpotOwnership };
