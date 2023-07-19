@@ -39,7 +39,30 @@ router.get('/current', requireAuth, asyncHandler(async (req, res) => {
       plainReview.Spot.previewImage = 'defaultImageURL';
     }
 
-    return plainReview;
+    return {
+      id: plainReview.id,
+      userId: plainReview.userId,
+      spotId: plainReview.spotId,
+      review: plainReview.review,
+      stars: plainReview.stars,
+      createdAt: plainReview.createdAt,
+      updatedAt: plainReview.updatedAt,
+      User: plainReview.User,
+      Spot: {
+        id: plainReview.Spot.id,
+        ownerId: plainReview.Spot.ownerId,
+        address: plainReview.Spot.address,
+        city: plainReview.Spot.city,
+        state: plainReview.Spot.state,
+        country: plainReview.Spot.country,
+        lat: plainReview.Spot.lat,
+        lng: plainReview.Spot.lng,
+        name: plainReview.Spot.name,
+        price: plainReview.Spot.price,
+        previewImage: plainReview.Spot.previewImage
+      },
+      ReviewImages: plainReview.ReviewImages
+    };
   });
 
   res.json({ Reviews: reviews });
@@ -111,7 +134,17 @@ router.put('/:reviewId', requireAuth, restoreUser, reviewValidators, asyncHandle
 
   await reviewToUpdate.save();
 
-  res.json(reviewToUpdate);
+  const reorderedReview = {
+    id: reviewToUpdate.id,
+    userId: reviewToUpdate.userId,
+    spotId: reviewToUpdate.spotId,
+    review: reviewToUpdate.review,
+    stars: reviewToUpdate.stars,
+    createdAt: reviewToUpdate.createdAt,
+    updatedAt: reviewToUpdate.updatedAt
+  };
+
+  res.json(reorderedReview);
 }));
 
 router.delete('/:reviewId', requireAuth, checkReviewOwnership, async (req, res) => {
