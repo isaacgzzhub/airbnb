@@ -75,7 +75,23 @@ router.get('/', async (req, res, next) => {
 
       spotJson.previewImage = image ? image.url : 'default-image-url'; // set your default image url
 
-      return spotJson;
+      return {
+        id: spotJson.id,
+        ownerId: spotJson.ownerId,
+        address: spotJson.address,
+        city: spotJson.city,
+        state: spotJson.state,
+        country: spotJson.country,
+        lat: spotJson.lat,
+        lng: spotJson.lng,
+        name: spotJson.name,
+        description: spotJson.description,
+        price: spotJson.price,
+        createdAt: spotJson.createdAt,
+        updatedAt: spotJson.updatedAt,
+        avgRating: spotJson.avgRating,
+        previewImage: spotJson.previewImage
+      };
     });
 
     // Wait for all promises to resolve
@@ -95,7 +111,7 @@ router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
   try {
       // Validate data here. If invalid, throw an error.
 
-      const spot = await Spot.create({
+      const spotInstance = await Spot.create({
           ownerId: req.user.id,
           address,
           city,
@@ -108,7 +124,25 @@ router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
           price
       });
 
-      return res.status(201).json(spot);
+      const spotJson = spotInstance.toJSON();
+
+      const reorderedSpot = {
+          id: spotJson.id,
+          ownerId: spotJson.ownerId,
+          address: spotJson.address,
+          city: spotJson.city,
+          state: spotJson.state,
+          country: spotJson.country,
+          lat: spotJson.lat,
+          lng: spotJson.lng,
+          name: spotJson.name,
+          description: spotJson.description,
+          price: spotJson.price,
+          createdAt: spotJson.createdAt,
+          updatedAt: spotJson.updatedAt
+      };
+
+      return res.status(201).json(reorderedSpot);
   } catch (err) {
       console.error(err);
       return res.status(400).json({
@@ -267,15 +301,33 @@ router.put('/:spotId',
     const spotId = parseInt(req.params.spotId, 10);
     const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
-    const spot = await Spot.findByPk(spotId);
+    const spotInstance = await Spot.findByPk(spotId);
 
-    if (!spot) {
+    if (!spotInstance) {
       return res.status(404).json({ message: "Spot couldn't be found" });
     }
 
-    await spot.update({ address, city, state, country, lat, lng, name, description, price });
+    await spotInstance.update({ address, city, state, country, lat, lng, name, description, price });
 
-    return res.status(200).json(spot);
+    const spotJson = spotInstance.toJSON();
+
+    const reorderedSpot = {
+      id: spotJson.id,
+      ownerId: spotJson.ownerId,
+      address: spotJson.address,
+      city: spotJson.city,
+      state: spotJson.state,
+      country: spotJson.country,
+      lat: spotJson.lat,
+      lng: spotJson.lng,
+      name: spotJson.name,
+      description: spotJson.description,
+      price: spotJson.price,
+      createdAt: spotJson.createdAt,
+      updatedAt: spotJson.updatedAt
+    };
+
+    return res.status(200).json(reorderedSpot);
   })
 );
 
@@ -319,7 +371,7 @@ router.get('/:spotId/reviews', asyncHandler(async (req, res) => {
   }
 
   // Fetch the reviews for the spot
-  const reviews = await Review.findAll({
+  const reviewInstances = await Review.findAll({
     where: { spotId },
     include: [
       {
@@ -333,6 +385,26 @@ router.get('/:spotId/reviews', asyncHandler(async (req, res) => {
       }
     ],
     order: [['createdAt', 'DESC']]
+  });
+
+  const reviews = reviewInstances.map(reviewInstance => {
+    const reviewJson = reviewInstance.toJSON();
+
+    return {
+      id: reviewJson.id,
+      userId: reviewJson.userId,
+      spotId: reviewJson.spotId,
+      review: reviewJson.review,
+      stars: reviewJson.stars,
+      createdAt: reviewJson.createdAt,
+      updatedAt: reviewJson.updatedAt,
+      User: {
+        id: reviewJson.User.id,
+        firstName: reviewJson.User.firstName,
+        lastName: reviewJson.User.lastName
+      },
+      ReviewImages: reviewJson.ReviewImages
+    };
   });
 
   res.json({ Reviews: reviews });
@@ -404,7 +476,28 @@ router.post('/:spotId/bookings', restoreUser, requireAuth, bookingValidators, as
     endDate
   });
 
-  res.json(newBooking);
+  const formatDate = (date) => {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  const formatDateTime = (date) => {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+  };
+
+  // Construct the response object in the desired order and format
+  const formattedResponse = {
+    id: newBooking.id,
+    spotId: newBooking.spotId,
+    userId: newBooking.userId,
+    startDate: formatDate(newBooking.startDate),
+    endDate: formatDate(newBooking.endDate),
+    createdAt: formatDateTime(newBooking.createdAt),
+    updatedAt: formatDateTime(newBooking.updatedAt)
+  };
+
+  res.json(formattedResponse);
 }));
 
 router.get('/:spotId/bookings', requireAuth, restoreUser, asyncHandler(async function(req, res) {
@@ -440,7 +533,20 @@ router.get('/:spotId/bookings', requireAuth, restoreUser, asyncHandler(async fun
       order: [['startDate', 'ASC']] // earliest booking first
     });
 
-    return res.json({ Bookings: bookings });
+    const formatDate = (date) => {
+      const d = new Date(date);
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    };
+
+    const formattedBookings = bookings.map(booking => {
+      return {
+        spotId: booking.spotId,
+        startDate: formatDate(booking.startDate),
+        endDate: formatDate(booking.endDate)
+      };
+    });
+
+    return res.json({ Bookings: formattedBookings });
   }
 }));
 

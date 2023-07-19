@@ -8,6 +8,16 @@ const { Spot, Booking, User, SpotImage } = require('../../db/models');
 
 const router = express.Router();
 
+const formatDate = (date) => {
+  const d = new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
+
+const formatDateTime = (date) => {
+  const d = new Date(date);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+};
+
 router.get('/current', restoreUser, asyncHandler(async function(req, res) {
   const userId = req.user.id; // req.user.id should hold the id of the currently authenticated user
 
@@ -30,6 +40,10 @@ router.get('/current', restoreUser, asyncHandler(async function(req, res) {
     const plainBooking = booking.get({ plain: true });
     plainBooking.Spot.previewImage = plainBooking.Spot.SpotImages.length ? plainBooking.Spot.SpotImages[0].url : null;
     delete plainBooking.Spot.SpotImages;
+    plainBooking.startDate = formatDate(plainBooking.startDate);
+    plainBooking.endDate = formatDate(plainBooking.endDate);
+    plainBooking.createdAt = formatDateTime(plainBooking.createdAt);
+    plainBooking.updatedAt = formatDateTime(plainBooking.updatedAt);
     return plainBooking;
   });
 
@@ -95,7 +109,25 @@ router.put('/:bookingId', restoreUser, requireAuth, asyncHandler(async function(
   booking.endDate = endDate;
   await booking.save();
 
-  return res.json(booking);
+  const formatDate = (date) => {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+
+  const formatDateTime = (date) => {
+    const d = new Date(date);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`;
+  };
+
+  const formattedBooking = {
+    ...booking.get({ plain: true }),
+    startDate: formatDate(booking.startDate),
+    endDate: formatDate(booking.endDate),
+    createdAt: formatDateTime(booking.createdAt),
+    updatedAt: formatDateTime(booking.updatedAt)
+  };
+
+  return res.json(formattedBooking);
 }));
 
 router.delete('/:bookingId', requireAuth, async (req, res) => {
