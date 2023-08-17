@@ -30,7 +30,13 @@ const validateSignup = [
   check('password')
     .exists({ checkFalsy: true })
     .isLength({ min: 6 })
-    .withMessage('Password must be 6 characters or more.'),
+    .withMessage('Password must be 6 characters or more.')
+    .custom((value) => {
+      if (!value.trim()) {  // If after trimming, the password is empty, that means it was only spaces.
+        throw new Error('Password cannot be only spaces.');
+      }
+      return true; // Indicates the success of this synchronous custom validator
+    }),
   handleValidationErrors
 ];
 

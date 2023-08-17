@@ -44,64 +44,165 @@ const validateCreateSpot = [
   handleValidationErrors
 ];
 
-router.get('/', async (req, res, next) => {
-  try {
-    const spots = await Spot.findAll();
+// router.get('/', asyncHandler(async (req, res) => {
+//   // Query Parameters
+//   const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
 
-    // Prepare an array of promises for getting avgRating and previewImage for each spot
-    const spotsWithRatingAndImagePromises = spots.map(async (spot) => {
-      const spotJson = spot.toJSON();  // Convert Sequelize instance to plain JavaScript object
+//   // Check Query Params for Errors
+//   if (isNaN(page) || page < 1 || page > 10) {
+//     return res.status(400).json({ message: "Bad Request", errors: { page: "Page must be greater than or equal to 1 and less than or equal to 10" } });
+//   }
 
-      // Calculate average rating
-      const reviews = await Review.findAll({
-        where: {
-          spotId: spot.id
-        }
-      });
+//   if (isNaN(size) || size < 1 || size > 20) {
+//     return res.status(400).json({ message: "Bad Request", errors: { size: "Size must be greater than or equal to 1 and less than or equal to 20" } });
+//   }
 
-      if (reviews.length > 0) {
-        const sum = reviews.reduce((acc, review) => acc + review.stars, 0);
-        spotJson.avgRating = sum / reviews.length;
-      } else {
-        spotJson.avgRating = null;  // or set a default value
+//   // Construct Filtering Conditions
+//   const conditions = {
+//     offset: (page - 1) * size,
+//     limit: size
+//   };
+
+//   conditions.where = {};
+
+//   if (minLat && !isNaN(minLat)) conditions.where.lat = { [Op.gte]: minLat };
+//   if (maxLat && !isNaN(maxLat)) conditions.where.lat = { ...(conditions.where.lat || {}), [Op.lte]: maxLat };
+//   if (minLng && !isNaN(minLng)) conditions.where.lng = { [Op.gte]: minLng };
+//   if (maxLng && !isNaN(maxLng)) conditions.where.lng = { ...(conditions.where.lng || {}), [Op.lte]: maxLng };
+//   if (minPrice && !isNaN(minPrice) && minPrice >= 0) conditions.where.price = { [Op.gte]: minPrice };
+//   if (maxPrice && !isNaN(maxPrice) && maxPrice >= 0) conditions.where.price = { ...(conditions.where.price || {}), [Op.lte]: maxPrice };
+
+//   // Fetch and return Spots
+//   const spots = await Spot.findAll(conditions);
+//   console.log("PAGE: *********", page)
+//   res.json({ Spots: spots, page: parseInt(page, 10), size: parseInt(size, 10) });
+// }));
+
+// router.get('/', async (req, res, next) => {
+//   try {
+//     const spots = await Spot.findAll();
+
+//     // Prepare an array of promises for getting avgRating and previewImage for each spot
+//     const spotsWithRatingAndImagePromises = spots.map(async (spot) => {
+//       const spotJson = spot.toJSON();  // Convert Sequelize instance to plain JavaScript object
+
+//       // Calculate average rating
+//       const reviews = await Review.findAll({
+//         where: {
+//           spotId: spot.id
+//         }
+//       });
+
+//       if (reviews.length > 0) {
+//         const sum = reviews.reduce((acc, review) => acc + review.stars, 0);
+//         spotJson.avgRating = sum / reviews.length;
+//       } else {
+//         spotJson.avgRating = null;  // or set a default value
+//       }
+
+//       // Get preview image
+//       const image = await SpotImage.findOne({
+//         where: {
+//           spotId: spot.id
+//         }
+//       });
+
+//       spotJson.previewImage = image ? image.url : 'default-image-url'; // set your default image url
+
+//       return {
+//         id: spotJson.id,
+//         ownerId: spotJson.ownerId,
+//         address: spotJson.address,
+//         city: spotJson.city,
+//         state: spotJson.state,
+//         country: spotJson.country,
+//         lat: spotJson.lat,
+//         lng: spotJson.lng,
+//         name: spotJson.name,
+//         description: spotJson.description,
+//         price: spotJson.price,
+//         createdAt: spotJson.createdAt,
+//         updatedAt: spotJson.updatedAt,
+//         avgRating: spotJson.avgRating,
+//         previewImage: spotJson.previewImage
+//       };
+//     });
+
+//     // Wait for all promises to resolve
+//     const spotsWithRatingAndImage = await Promise.all(spotsWithRatingAndImagePromises);
+
+//     return res.status(200).json({ Spots: spotsWithRatingAndImage });
+//   } catch (err) {
+//     next(err);  // Pass errors to your error-handling middleware
+//   }
+// });
+
+router.get('/', asyncHandler(async (req, res) => {
+  // Query Parameters
+  const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+
+  // Check Query Params for Errors
+  if (isNaN(page) || page < 1 || page > 10) {
+    return res.status(400).json({ message: "Bad Request", errors: { page: "Page must be greater than or equal to 1 and less than or equal to 10" } });
+  }
+
+  if (isNaN(size) || size < 1 || size > 20) {
+    return res.status(400).json({ message: "Bad Request", errors: { size: "Size must be greater than or equal to 1 and less than or equal to 20" } });
+  }
+
+  // Construct Filtering Conditions
+  const conditions = {
+    offset: (page - 1) * size,
+    limit: size,
+    where: {}
+  };
+
+  if (minLat && !isNaN(minLat)) conditions.where.lat = { [Op.gte]: minLat };
+  if (maxLat && !isNaN(maxLat)) conditions.where.lat = { ...(conditions.where.lat || {}), [Op.lte]: maxLat };
+  if (minLng && !isNaN(minLng)) conditions.where.lng = { [Op.gte]: minLng };
+  if (maxLng && !isNaN(maxLng)) conditions.where.lng = { ...(conditions.where.lng || {}), [Op.lte]: maxLng };
+  if (minPrice && !isNaN(minPrice) && minPrice >= 0) conditions.where.price = { [Op.gte]: minPrice };
+  if (maxPrice && !isNaN(maxPrice) && maxPrice >= 0) conditions.where.price = { ...(conditions.where.price || {}), [Op.lte]: maxPrice };
+
+  // Fetch Spots
+  const spots = await Spot.findAll(conditions);
+
+  // Prepare an array of promises for getting avgRating and previewImage for each spot
+  const spotsWithRatingAndImagePromises = spots.map(async (spot) => {
+    const spotJson = spot.toJSON();
+
+    // Calculate average rating
+    const reviews = await Review.findAll({
+      where: {
+        spotId: spot.id
       }
-
-      // Get preview image
-      const image = await SpotImage.findOne({
-        where: {
-          spotId: spot.id
-        }
-      });
-
-      spotJson.previewImage = image ? image.url : 'default-image-url'; // set your default image url
-
-      return {
-        id: spotJson.id,
-        ownerId: spotJson.ownerId,
-        address: spotJson.address,
-        city: spotJson.city,
-        state: spotJson.state,
-        country: spotJson.country,
-        lat: spotJson.lat,
-        lng: spotJson.lng,
-        name: spotJson.name,
-        description: spotJson.description,
-        price: spotJson.price,
-        createdAt: spotJson.createdAt,
-        updatedAt: spotJson.updatedAt,
-        avgRating: spotJson.avgRating,
-        previewImage: spotJson.previewImage
-      };
     });
 
-    // Wait for all promises to resolve
-    const spotsWithRatingAndImage = await Promise.all(spotsWithRatingAndImagePromises);
+    if (reviews.length > 0) {
+      const sum = reviews.reduce((acc, review) => acc + review.stars, 0);
+      spotJson.avgRating = sum / reviews.length;
+    } else {
+      spotJson.avgRating = null;
+    }
 
-    return res.status(200).json({ Spots: spotsWithRatingAndImage });
-  } catch (err) {
-    next(err);  // Pass errors to your error-handling middleware
-  }
-});
+    // Get preview image
+    const image = await SpotImage.findOne({
+      where: {
+        spotId: spot.id
+      }
+    });
+
+    spotJson.previewImage = image ? image.url : 'default-image-url';
+
+    return spotJson;
+  });
+
+  // Wait for all promises to resolve
+  const spotsWithRatingAndImage = await Promise.all(spotsWithRatingAndImagePromises);
+
+  res.json({ Spots: spotsWithRatingAndImage, page: parseInt(page, 10), size: parseInt(size, 10) });
+}));
+
 
 router.post('/', requireAuth, validateCreateSpot, async (req, res) => {
   const {
@@ -548,40 +649,6 @@ router.get('/:spotId/bookings', requireAuth, restoreUser, asyncHandler(async fun
 
     return res.json({ Bookings: formattedBookings });
   }
-}));
-
-router.get('/', asyncHandler(async (req, res) => {
-  // Query Parameters
-  const { page = 1, size = 20, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
-
-  // Check Query Params for Errors
-  if (isNaN(page) || page < 1 || page > 10) {
-    return res.status(400).json({ message: "Bad Request", errors: { page: "Page must be greater than or equal to 1 and less than or equal to 10" } });
-  }
-
-  if (isNaN(size) || size < 1 || size > 20) {
-    return res.status(400).json({ message: "Bad Request", errors: { size: "Size must be greater than or equal to 1 and less than or equal to 20" } });
-  }
-
-  // Construct Filtering Conditions
-  const conditions = {
-    offset: (page - 1) * size,
-    limit: size
-  };
-
-  conditions.where = {};
-
-  if (minLat && !isNaN(minLat)) conditions.where.lat = { [Op.gte]: minLat };
-  if (maxLat && !isNaN(maxLat)) conditions.where.lat = { ...(conditions.where.lat || {}), [Op.lte]: maxLat };
-  if (minLng && !isNaN(minLng)) conditions.where.lng = { [Op.gte]: minLng };
-  if (maxLng && !isNaN(maxLng)) conditions.where.lng = { ...(conditions.where.lng || {}), [Op.lte]: maxLng };
-  if (minPrice && !isNaN(minPrice) && minPrice >= 0) conditions.where.price = { [Op.gte]: minPrice };
-  if (maxPrice && !isNaN(maxPrice) && maxPrice >= 0) conditions.where.price = { ...(conditions.where.price || {}), [Op.lte]: maxPrice };
-
-  // Fetch and return Spots
-  const spots = await Spot.findAll(conditions);
-
-  res.json({ Spots: spots, page: parseInt(page, 10), size: parseInt(size, 10) });
 }));
 
 router.delete('/:spotId', requireAuth, checkSpotOwnership, async (req, res) => {

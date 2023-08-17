@@ -16,14 +16,24 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          len: [1, 30]
+          len: [1, 30],
+          notEmptyString(value) {
+            if (value.length === 0 || value.trim().length === 0) {
+              throw new Error("Cannot be empty.");
+            }
+          }
         }
       },
       lastName: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          len: [1, 30]
+          len: [1, 30],
+          notEmptyString(value) {
+            if (value.length === 0 || value.trim().length === 0) {
+              throw new Error("Cannot be empty.");
+            }
+          }
         }
       },
       username: {
@@ -31,6 +41,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           len: [4, 30],
+          notEmptyString(value) {
+            if (value.length === 0 || value.trim().length === 0) {
+              throw new Error("Cannot be empty.");
+            }
+          },
           isNotEmail(value) {
             if (Validator.isEmail(value)) {
               throw new Error("Cannot be an email.")

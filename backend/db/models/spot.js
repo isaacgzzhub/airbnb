@@ -16,6 +16,13 @@ module.exports = (sequelize, DataTypes) => {
         Spot.hasMany(models.Review, { foreignKey: 'spotId', onDelete: 'CASCADE' })
     }
   }
+
+  const validateNotOnlyNumbers = (value) => {
+    if (/^\d+$/.test(value)) {
+      throw new Error('Field cannot be only numbers.');
+    }
+  };
+
   Spot.init({
     ownerId: {
       type: DataTypes.INTEGER,
@@ -23,19 +30,31 @@ module.exports = (sequelize, DataTypes) => {
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notOnlyNumbers: validateNotOnlyNumbers
+      }
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notOnlyNumbers: validateNotOnlyNumbers
+      }
     },
     state: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notOnlyNumbers: validateNotOnlyNumbers
+      }
     },
     country: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notOnlyNumbers: validateNotOnlyNumbers
+      }
     },
     lat: {
       type: DataTypes.DECIMAL,
@@ -47,11 +66,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notOnlyNumbers: validateNotOnlyNumbers
+      }
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notOnlyNumbers: validateNotOnlyNumbers
+      }
     },
     price: {
       type: DataTypes.DECIMAL,
