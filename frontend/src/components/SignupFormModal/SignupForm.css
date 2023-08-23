@@ -8,7 +8,7 @@ h1 {
 form {
   display: flex;
   flex-direction: column; /* Stacks form elements vertically */
-  max-width: 400px; /* Adjust as needed */
+  width: 400px; /* Adjust as needed */
   margin: 0 auto; /* Centers the form horizontally */
 }
 

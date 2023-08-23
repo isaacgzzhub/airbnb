@@ -1,9 +1,7 @@
 ul {
-  list-style-type: none; /* Removes bullet points */
-  padding: 0; /* Removes default padding */
-  margin: 0; /* Removes default margin */
-  display: flex; /* Uses flexbox to align items in a row */
-  align-items: center; /* Aligns vertically */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 li {
@@ -79,4 +77,27 @@ NavLink.active {
   width: 50px;     /* Adjust as needed */
   height: auto;    /* Keeps the aspect ratio of the image */
   display: block;  /* Makes the image a block element to remove unwanted space */
+}
+
+button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none; /* removes the default browser outline on focus */
+  font-size: 24px; /* adjust as needed */
+  color: #333; /* you can pick your color here */
+}
+
+.fas.fa-user-circle {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* this will make it a circle */
+  overflow: hidden;
+  text-align: center;
+  line-height: 40px; /* vertically center the icon */
+}
+
+button:hover .fas.fa-user-circle {
+  color: #007BFF; /* change color on hover */
 }
