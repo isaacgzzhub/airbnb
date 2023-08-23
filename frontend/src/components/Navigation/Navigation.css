@@ -74,3 +74,9 @@ NavLink.active {
 .profile-dropdown button:hover {
   background-color: #f5f5f5; /* Changes background when hovered */
 }
+
+.home-logo {
+  width: 50px;     /* Adjust as needed */
+  height: auto;    /* Keeps the aspect ratio of the image */
+  display: block;  /* Makes the image a block element to remove unwanted space */
+}
