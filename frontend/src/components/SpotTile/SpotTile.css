@@ -1,0 +1,25 @@
+.spot-tile {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  transition: box-shadow 0.3s;
+}
+
+.spot-tile:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.spot-thumbnail {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.spot-info {
+  margin-top: 0.5rem;
+}
+
+.spot-name, .spot-city-state, .spot-price {
+  display: block;
+  margin: 0.2rem 0;
+}
