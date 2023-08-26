@@ -4,7 +4,7 @@ import "./SpotTile.css"; // for styling
 function SpotTile({ spot }) {
   return (
     <div className="spot-tile">
-      <img src={spot.image} alt={spot.name} className="spot-thumbnail" />
+      <img src={spot.previewImage} alt={spot.name} className="spot-thumbnail" />
       <div className="spot-info">
         <span className="spot-name">{spot.name}</span>
         <span className="spot-city-state">{`${spot.city}, ${spot.state}`}</span>
