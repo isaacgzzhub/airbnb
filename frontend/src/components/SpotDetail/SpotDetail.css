@@ -1,0 +1,55 @@
+/* SpotDetail.css */
+
+.spot-detail-container {
+  width: 80%;
+  margin: 2rem auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #fff;
+}
+
+/* Images */
+
+.spot-images {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.large-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.small-images {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.small-image {
+  width: calc(20% - 8px);  /* 20% width for each of the 4 images, minus 8px for a small margin */
+  height: 100px;
+  object-fit: cover;
+  margin: 0 1rem;
+  border-radius: 4px;
+}
+
+/* Details */
+
+p {
+  margin: 1rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #444;
+  text-align: center;
+  margin-bottom: 1rem;
+}

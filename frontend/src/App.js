@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Switch, Route } from "react-router-dom"; // Import Route from react-router-dom
+import { Switch, Route } from "react-router-dom";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
-import LandingPage from "./components/LandingPage"; // Ensure this path matches where your LandingPage component is saved
+import LandingPage from "./components/LandingPage";
+import SpotDetail from "./components/SpotDetail";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,6 +21,9 @@ function App() {
         <Switch>
           <Route path="/" exact component={LandingPage} />
           {/* Add more routes as needed */}
+          <Route path="/spots/:spotId">
+            <SpotDetail />
+          </Route>
         </Switch>
       )}
     </>
