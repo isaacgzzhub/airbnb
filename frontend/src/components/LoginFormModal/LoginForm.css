@@ -7,7 +7,7 @@ h1 {
 
 form {
   width: 400px; /* Limit the width of the form for better aesthetics */
-  margin: 0 auto;   /* Center the form */
+  margin: 0 auto; /* Center the form */
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -15,41 +15,49 @@ form {
 }
 
 label {
-  display: block;  /* Make each label take the full width */
+  display: block; /* Make each label take the full width */
   margin-bottom: 10px;
   font-size: 16px;
   color: #666;
 }
 
 input {
-  width: 100%;   /* Make the input fields take the full width of the form */
+  width: 100%; /* Make the input fields take the full width of the form */
   padding: 10px; /* Add some padding for better touch feeling */
   margin-top: 5px;
   border: 1px solid #ddd; /* Add a subtle border */
-  border-radius: 5px;  /* Slightly round the corners */
+  border-radius: 5px; /* Slightly round the corners */
   font-size: 16px;
   transition: border-color 0.3s; /* Animate the border color */
 }
 
 input:focus {
-  border-color: #007BFF; /* Change border color to a blue shade when focused */
-  outline: none;  /* Remove the browser's default outline */
+  border-color: #007bff; /* Change border color to a blue shade when focused */
+  outline: none; /* Remove the browser's default outline */
 }
 
 button {
-  width: 100%;  /* Make the button take the full width of the form */
+  width: 100%; /* Make the button take the full width of the form */
   padding: 10px 15px; /* Add some padding for a better touch feeling */
-  background-color: #007BFF;  /* A blue shade */
-  color: #fff;  /* White text color */
+  background-color: #007bff; /* A blue shade */
+  color: #fff; /* White text color */
   font-size: 16px;
   border: none; /* Remove the default border */
-  border-radius: 5px;  /* Slightly round the corners */
-  cursor: pointer;  /* Change cursor to pointer when hovering over the button */
-  transition: background-color 0.3s;  /* Animate the background color */
+  border-radius: 5px; /* Slightly round the corners */
+  cursor: pointer; /* Change cursor to pointer when hovering over the button */
+  transition: background-color 0.3s; /* Animate the background color */
+}
+
+button:disabled {
+  background-color: #6f757b;
+}
+
+button:disabled:hover {
+  background-color: #6f757b;
 }
 
 button:hover {
-  background-color: #0056b3;  /* A slightly darker blue shade when hovering */
+  background-color: #0056b3; /* A slightly darker blue shade when hovering */
 }
 
 /* Display the error message in a red color */
@@ -57,4 +65,10 @@ p {
   color: red;
   font-size: 14px;
   margin-top: 5px;
+}
+
+.demo-user-link {
+  text-align: center;
+  margin: 10px;
+  cursor: pointer;
 }
