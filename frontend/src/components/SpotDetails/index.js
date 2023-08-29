@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import "./SpotDetail.css";
+import "./SpotDetails.css";
 
 const fetchSpotDetails = async (spotId) => {
   try {
@@ -17,7 +17,7 @@ const fetchSpotDetails = async (spotId) => {
   }
 };
 
-function SpotDetail() {
+function SpotDetails() {
   const { spotId } = useParams();
   const [spot, setSpot] = useState(null);
 
@@ -29,7 +29,7 @@ function SpotDetail() {
   if (!spot) return <div>Loading...</div>;
 
   return (
-    <div className="spot-detail-container">
+    <div className="spot-details-container">
       <h1>{spot.name}</h1>
       <p>
         Location: {spot.city}, {spot.state}, {spot.country}
@@ -50,7 +50,7 @@ function SpotDetail() {
             <img
               key={idx}
               src={image.url}
-              alt={`Spot detail ${idx + 1}`} // Updated alt attribute
+              alt={`Spot details ${idx + 1}`} // Updated alt attribute
               className="small-image"
             />
           ))}
@@ -68,4 +68,4 @@ function SpotDetail() {
   );
 }
 
-export default SpotDetail;
+export default SpotDetails;
