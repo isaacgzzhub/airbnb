@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import "./SpotDetail.css";
 
 const fetchSpotDetails = async (spotId) => {
   try {
@@ -21,8 +22,6 @@ function SpotDetail() {
   const [spot, setSpot] = useState(null);
 
   useEffect(() => {
-    // Fetch the data here and set it to the state.
-    // Make sure to define or import fetchSpotDetails function
     fetchSpotDetails(spotId).then((data) => setSpot(data));
   }, [spotId]);
 
@@ -37,25 +36,26 @@ function SpotDetail() {
       </p>
 
       {/* Images */}
-      {spot.SpotImages && spot.SpotImages.length > 0 && (
-        <>
-          <img
-            src={spot.SpotImages[0].url}
-            alt="Main Spot"
-            className="large-image"
-          />
-          <div className="small-images">
-            {spot.SpotImages.slice(1, 5).map((imgObj, idx) => (
-              <img
-                key={idx}
-                src={imgObj.url}
-                alt={`Spot ${idx + 1}`}
-                className="small-image"
-              />
-            ))}
-          </div>
-        </>
-      )}
+      <div className="spot-images">
+        {/* Large Image */}
+        <img
+          src={spot.SpotImages[0]?.url}
+          alt={`Main Spot: ${spot.name}`} // Updated alt attribute
+          className="large-image"
+        />
+
+        {/* Small Images */}
+        <div className="small-images">
+          {spot.SpotImages.slice(1, 5).map((image, idx) => (
+            <img
+              key={idx}
+              src={image.url}
+              alt={`Spot detail ${idx + 1}`} // Updated alt attribute
+              className="small-image"
+            />
+          ))}
+        </div>
+      </div>
 
       <p>
         Hosted by {spot.Owner.firstName}, {spot.Owner.lastName}
