@@ -30,44 +30,61 @@ function SpotDetails() {
 
   return (
     <div className="spot-details-container">
-      <h1 class="spot-details-title">{spot.name}</h1>
-      <p>
-        Location: {spot.city}, {spot.state}, {spot.country}
-      </p>
+      <div className="spot-main-content">
+        <h1 class="spot-details-title">{spot.name}</h1>
+        <p>
+          Location: {spot.city}, {spot.state}, {spot.country}
+        </p>
 
-      {/* Images */}
-      <div className="spot-images">
-        {/* Large Image */}
-        <div class="large-image-wrapper">
-          <img
-            src={spot.SpotImages[0]?.url}
-            alt={`Main Spot: ${spot.name}`} // Updated alt attribute
-            className="large-image"
-          />
+        {/* Images */}
+        <div className="spot-images">
+          {/* Large Image */}
+          <div class="large-image-wrapper">
+            <img
+              src={spot.SpotImages[0]?.url}
+              alt={`Main Spot: ${spot.name}`} // Updated alt attribute
+              className="large-image"
+            />
+          </div>
+
+          {/* Small Images */}
+          <div className="small-images">
+            {spot.SpotImages.slice(1, 5).map((image, idx) => (
+              <div class="small-image-wrapper">
+                <img
+                  key={idx}
+                  src={image.url}
+                  alt={`Spot details ${idx + 1}`} // Updated alt attribute
+                  className="small-image"
+                />
+              </div>
+            ))}
+          </div>
         </div>
+        <div className="description">
+          <div className="title-description">
+            <p>
+              Hosted by {spot.Owner.firstName}, {spot.Owner.lastName}
+            </p>
 
-        {/* Small Images */}
-        <div className="small-images">
-          {spot.SpotImages.slice(1, 5).map((image, idx) => (
-            <div class="small-image-wrapper">
-              <img
-                key={idx}
-                src={image.url}
-                alt={`Spot details ${idx + 1}`} // Updated alt attribute
-                className="small-image"
-              />
+            <p>{spot.description}</p>
+          </div>
+
+          {/* Callout Information Box */}
+          <div className="spot-callout-box">
+            <div className="spot-price">
+              ${spot.price.toFixed(2)}{" "}
+              <span className="per-night-label">/ night</span>
             </div>
-          ))}
+            <button
+              className="reserve-button"
+              onClick={() => alert("Feature coming soon")}
+            >
+              Reserve
+            </button>
+          </div>
         </div>
       </div>
-
-      <p>
-        Hosted by {spot.Owner.firstName}, {spot.Owner.lastName}
-      </p>
-      <p>{spot.description}</p>
-
-      {/* Callout Information Box */}
-      <div className="callout-info">{/* Callout content goes here */}</div>
     </div>
   );
 }

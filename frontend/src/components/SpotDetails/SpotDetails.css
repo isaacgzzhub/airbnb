@@ -66,3 +66,51 @@ h1.spot-details-title {
   text-align: left;
   margin-bottom: 1rem;
 }
+
+.spot-callout-box {
+  width: 25%;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.spot-price {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.per-night-label {
+  font-size: 16px;
+  color: #777;
+}
+
+.reserve-button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #007bff; /* blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3; /* a darker blue */
+  }
+}
+
+.description {
+  display: flex;
+  justify-content: space-between; /* ensures some space between the two elements */
+}
+
+.spot-callout-box {
+  flex: 0 0 30%; /* This tells the box to not grow or shrink and maintain its base size of 30% */
+  padding-left: 10px; /* Optional: gives a bit of spacing if boxes are too close */
+}
