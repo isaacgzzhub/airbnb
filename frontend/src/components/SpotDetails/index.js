@@ -25,7 +25,6 @@ function SpotDetails() {
     fetchSpotDetails(spotId).then((data) => setSpot(data));
   }, [spotId]);
 
-  // Return early while data is being fetched.
   if (!spot) return <div>Loading...</div>;
 
   return (
@@ -36,25 +35,22 @@ function SpotDetails() {
           Location: {spot.city}, {spot.state}, {spot.country}
         </p>
 
-        {/* Images */}
         <div className="spot-images">
-          {/* Large Image */}
           <div class="large-image-wrapper">
             <img
               src={spot.SpotImages[0]?.url}
-              alt={`Main Spot: ${spot.name}`} // Updated alt attribute
+              alt={`Main Spot: ${spot.name}`}
               className="large-image"
             />
           </div>
 
-          {/* Small Images */}
           <div className="small-images">
             {spot.SpotImages.slice(1, 5).map((image, idx) => (
               <div class="small-image-wrapper">
                 <img
                   key={idx}
                   src={image.url}
-                  alt={`Spot details ${idx + 1}`} // Updated alt attribute
+                  alt={`Spot details ${idx + 1}`}
                   className="small-image"
                 />
               </div>
@@ -70,11 +66,15 @@ function SpotDetails() {
             <p>{spot.description}</p>
           </div>
 
-          {/* Callout Information Box */}
           <div className="spot-callout-box">
-            <div className="spot-price">
-              ${spot.price.toFixed(2)}{" "}
-              <span className="per-night-label">/ night</span>
+            <div className="price-rating">
+              <div className="spot-price">
+                ${spot.price.toFixed(2)}{" "}
+                <span className="per-night-label">/ night</span>
+              </div>
+              <div className="spot-rating">
+                ⭐ {spot.avgStarRating.toFixed(1)} · {spot.numReviews} review
+              </div>
             </div>
             <button
               className="reserve-button"
@@ -84,6 +84,14 @@ function SpotDetails() {
             </button>
           </div>
         </div>
+        <h2>
+          ⭐ {spot.avgStarRating.toFixed(1)} · {spot.numReviews} review
+        </h2>
+
+        {/* NOTE:
+           Assuming you will add the list of individual reviews here in the future
+           when you have the actual review content in the response.
+      */}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import SpotTile from "../SpotTile"; // Assuming you've created a SpotTile component
-import "./LandingPage.css"; // for styling
+import SpotTile from "../SpotTile";
+import "./LandingPage.css";
 
 function LandingPage() {
   const [spots, setSpots] = useState([]);
@@ -12,7 +12,7 @@ function LandingPage() {
       try {
         const response = await fetch("/api/spots");
         const data = await response.json();
-        setSpots(data.Spots); // Adjust based on your API's returned data structure
+        setSpots(data.Spots);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching spots: ", err);

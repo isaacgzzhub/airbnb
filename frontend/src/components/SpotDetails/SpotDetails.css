@@ -1,5 +1,3 @@
-/* SpotDetails.css */
-
 .spot-details-container {
   width: 80%;
   margin: 2rem auto;
@@ -10,8 +8,6 @@
   display: flex;
   flex-direction: column;
 }
-
-/* Images */
 
 .spot-images {
   display: flex;
@@ -41,9 +37,9 @@
 }
 
 .small-images {
-  flex: 1; /* take less space */
+  flex: 1;
   display: grid;
-  grid-template-columns: 1fr 1fr; /* 2x2 grid layout */
+  grid-template-columns: 1fr 1fr;
 }
 
 .small-image {
@@ -51,8 +47,6 @@
   height: 100%;
   object-fit: cover;
 }
-
-/* Details */
 
 p {
   margin: 1rem 0;
@@ -93,7 +87,7 @@ h1.spot-details-title {
 .reserve-button {
   padding: 10px 20px;
   font-size: 18px;
-  background-color: #007bff; /* blue */
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
@@ -101,16 +95,28 @@ h1.spot-details-title {
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #0056b3; /* a darker blue */
+    background-color: #0056b3;
   }
 }
 
 .description {
   display: flex;
-  justify-content: space-between; /* ensures some space between the two elements */
+  justify-content: space-between;
 }
 
 .spot-callout-box {
-  flex: 0 0 30%; /* This tells the box to not grow or shrink and maintain its base size of 30% */
-  padding-left: 10px; /* Optional: gives a bit of spacing if boxes are too close */
+  flex: 0 0 30%;
+  padding-left: 10px;
+  display: flex;
+  align-items: stretch;
+}
+
+.price-rating {
+  display: flex;
+  justify-content: space-between;
+}
+
+.spot-rating {
+  display: flex;
+  align-items: center;
 }
