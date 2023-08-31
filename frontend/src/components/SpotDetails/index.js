@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./SpotDetails.css";
 
 const fetchSpotDetails = async (spotId) => {
@@ -40,6 +41,8 @@ function SpotDetails() {
     const options = { year: "numeric", month: "long" };
     return new Date(dateString).toLocaleDateString("en-US", options);
   };
+  const user = useSelector((state) => state.session.user);
+  const isOwner = user && spot && user.id === spot.Owner.id;
 
   useEffect(() => {
     Promise.all([fetchSpotDetails(spotId), fetchSpotReviews(spotId)])
@@ -125,20 +128,23 @@ function SpotDetails() {
         <h2>{renderReviewSummary()}</h2>
 
         <div className="reviews-section">
-          <h3>Reviews:</h3>
-          {reviews.map((review) => (
-            <div key={review.id} className="review-item">
-              <strong>{review.User.firstName}</strong>
-              <p>{formatDate(review.createdAt)}</p>{" "}
-              {/* Formatting the date here */}
-              <p>{review.review}</p>
-              <div className="review-image">
-                {review.ReviewImages && review.ReviewImages[0] && (
-                  <img src={review.ReviewImages[0].url} alt="Review" />
-                )}
+          {reviews.length > 0 ? (
+            reviews.map((review) => (
+              <div key={review.id} className="review-item">
+                <strong>{review.User.firstName}</strong>
+                <p>{formatDate(review.createdAt)}</p>{" "}
+                {/* Formatting the date here */}
+                <p>{review.review}</p>
+                <div className="review-image">
+                  {review.ReviewImages && review.ReviewImages[0] && (
+                    <img src={review.ReviewImages[0].url} alt="Review" />
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : user && !isOwner ? (
+            <p>Be the first to post a review!</p>
+          ) : null}
         </div>
       </div>
     </div>
