@@ -17,15 +17,55 @@ const fetchSpotDetails = async (spotId) => {
   }
 };
 
+const fetchSpotReviews = async (spotId) => {
+  try {
+    const response = await fetch(`/api/spots/${spotId}/reviews`);
+
+    if (!response.ok) {
+      throw response;
+    }
+
+    const data = await response.json();
+    return data.Reviews;
+  } catch (error) {
+    console.error("There was an error fetching the spot reviews", error);
+  }
+};
+
 function SpotDetails() {
   const { spotId } = useParams();
   const [spot, setSpot] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long" };
+    return new Date(dateString).toLocaleDateString("en-US", options);
+  };
 
   useEffect(() => {
-    fetchSpotDetails(spotId).then((data) => setSpot(data));
+    Promise.all([fetchSpotDetails(spotId), fetchSpotReviews(spotId)])
+      .then(([spotData, reviewsData]) => {
+        setSpot(spotData);
+        setReviews(reviewsData);
+      })
+      .catch((error) => {
+        console.error("Error fetching spot data or reviews:", error);
+      });
   }, [spotId]);
 
   if (!spot) return <div>Loading...</div>;
+
+  const renderReviewSummary = () => {
+    if (spot.numReviews === 0) {
+      return <span>⭐ New</span>;
+    }
+    return (
+      <span>
+        ⭐ {spot.avgStarRating.toFixed(1)} · {spot.numReviews}{" "}
+        {spot.numReviews === 1 ? "Review" : "Reviews"}
+        {spot.numReviews > 1 ? "" : ""}
+      </span>
+    );
+  };
 
   return (
     <div className="spot-details-container">
@@ -72,9 +112,7 @@ function SpotDetails() {
                 ${spot.price.toFixed(2)}{" "}
                 <span className="per-night-label">/ night</span>
               </div>
-              <div className="spot-rating">
-                ⭐ {spot.avgStarRating.toFixed(1)} · {spot.numReviews} review
-              </div>
+              <div className="spot-rating">{renderReviewSummary()}</div>
             </div>
             <button
               className="reserve-button"
@@ -84,14 +122,24 @@ function SpotDetails() {
             </button>
           </div>
         </div>
-        <h2>
-          ⭐ {spot.avgStarRating.toFixed(1)} · {spot.numReviews} review
-        </h2>
+        <h2>{renderReviewSummary()}</h2>
 
-        {/* NOTE:
-           Assuming you will add the list of individual reviews here in the future
-           when you have the actual review content in the response.
-      */}
+        <div className="reviews-section">
+          <h3>Reviews:</h3>
+          {reviews.map((review) => (
+            <div key={review.id} className="review-item">
+              <strong>{review.User.firstName}</strong>
+              <p>{formatDate(review.createdAt)}</p>{" "}
+              {/* Formatting the date here */}
+              <p>{review.review}</p>
+              <div className="review-image">
+                {review.ReviewImages && review.ReviewImages[0] && (
+                  <img src={review.ReviewImages[0].url} alt="Review" />
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
