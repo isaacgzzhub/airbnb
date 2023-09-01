@@ -16,7 +16,7 @@ function Navigation({ isLoaded }) {
       <ul>
         {sessionUser && (
           <li>
-            <NavLink to="/create-new-spot" className="create-spot-button">
+            <NavLink to="/spots/new" className="create-spot-button">
               Create a New Spot
             </NavLink>
           </li>
