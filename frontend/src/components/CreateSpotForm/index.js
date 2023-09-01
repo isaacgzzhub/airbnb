@@ -59,6 +59,20 @@ const CreateSpotForm = () => {
               onChange={(e) => setState(e.target.value)}
             />
           </label>
+          <div className="section-container">
+            <h2>Describe your place to guests</h2>
+            <p className="section-caption">
+              Mention the best features of your space, any special amenities
+              like fast wifi or parking, and what you love about the
+              neighborhood.
+            </p>
+            <textarea
+              placeholder="Please write at least 30 characters"
+              minLength={30}
+              rows={5}
+              className="description-textarea"
+            ></textarea>
+          </div>
           <button type="submit">Create Spot</button>
         </form>
       </div>
