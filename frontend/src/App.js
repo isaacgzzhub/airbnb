@@ -5,6 +5,7 @@ import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import LandingPage from "./components/LandingPage";
 import SpotDetails from "./components/SpotDetails";
+import NewSpotForm from "./components/Navigation/index.js";
 
 function App() {
   const dispatch = useDispatch();
@@ -20,7 +21,9 @@ function App() {
       {isLoaded && (
         <Switch>
           <Route path="/" exact component={LandingPage} />
-          {/* Add more routes as needed */}
+          <Route path="/create-new-spot">
+            <NewSpotForm />
+          </Route>
           <Route path="/spots/:spotId">
             <SpotDetails />
           </Route>

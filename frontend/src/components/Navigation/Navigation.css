@@ -11,11 +11,11 @@ NavLink {
 }
 
 NavLink:hover {
-  color: #007BFF; /* Changes color when hovered */
+  color: #007bff; /* Changes color when hovered */
 }
 
 NavLink.active {
-  color: #007BFF; /* Indicates the active link */
+  color: #007bff; /* Indicates the active link */
   font-weight: bold; /* Makes active link bold */
 }
 
@@ -63,8 +63,8 @@ NavLink.active {
 
 .home-logo {
   margin: 10px;
-  height: 40px;    /* Keeps the aspect ratio of the image */
-  display: block;  /* Makes the image a block element to remove unwanted space */
+  height: 40px; /* Keeps the aspect ratio of the image */
+  display: block; /* Makes the image a block element to remove unwanted space */
 }
 
 button {
@@ -87,5 +87,20 @@ button {
 }
 
 button:hover .fas.fa-user-circle {
-  color: #007BFF; /* change color on hover */
+  color: #007bff; /* change color on hover */
+}
+
+.create-spot-button {
+  padding: 10px 20px;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #ffffff;
+  font-weight: 600;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.create-spot-button:hover {
+  background-color: #0056b3; /* Slightly darker blue on hover */
+  color: #ffffff;
 }
