@@ -43,17 +43,23 @@ function SpotDetails() {
   };
   const user = useSelector((state) => state.session.user);
   const isOwner = user && spot && user.id === spot.Owner.id;
+  const [hasReviewed, setHasReviewed] = useState(false);
 
   useEffect(() => {
     Promise.all([fetchSpotDetails(spotId), fetchSpotReviews(spotId)])
       .then(([spotData, reviewsData]) => {
         setSpot(spotData);
         setReviews(reviewsData);
+        if (user && reviewsData.some((review) => review.userId === user.id)) {
+          setHasReviewed(true);
+        } else {
+          setHasReviewed(false);
+        }
       })
       .catch((error) => {
         console.error("Error fetching spot data or reviews:", error);
       });
-  }, [spotId]);
+  }, [spotId, user]);
 
   if (!spot) return <div>Loading...</div>;
 
@@ -69,6 +75,10 @@ function SpotDetails() {
       </span>
     );
   };
+
+  console.log("User:", user);
+  console.log("Is Owner:", isOwner);
+  console.log("Has Reviewed:", hasReviewed);
 
   return (
     <div className="spot-details-container">
@@ -125,9 +135,16 @@ function SpotDetails() {
             </button>
           </div>
         </div>
-        <h2>{renderReviewSummary()}</h2>
+        <h2 className="spot-review-details">{renderReviewSummary()}</h2>
 
-        <div className="reviews-section">
+        <div>
+          <div className="review-button-container">
+            {user && !isOwner && !hasReviewed && (
+              <button onClick={() => alert("Post Review Feature Coming Soon")}>
+                Post Your Review
+              </button>
+            )}
+          </div>
           {reviews.length > 0 ? (
             reviews.map((review) => (
               <div key={review.id} className="review-item">

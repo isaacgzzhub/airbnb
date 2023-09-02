@@ -61,6 +61,10 @@ h1.spot-details-title {
   margin-bottom: 1rem;
 }
 
+h2.spot-review-details {
+  text-align: left;
+}
+
 .spot-callout-box {
   width: 25%;
   padding: 20px;
@@ -135,4 +139,9 @@ h1.spot-details-title {
 .review-image {
   max-width: 150px;
   margin-top: 8px;
+}
+
+.review-button-container {
+  display: flex;
+  justify-content: left;
 }
