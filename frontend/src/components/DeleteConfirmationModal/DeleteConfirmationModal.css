@@ -1,0 +1,40 @@
+.delete-confirmation-modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 300px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirmation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.delete-button,
+.cancel-button {
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.delete-button {
+  background-color: #ff4b4b;
+  color: #fff;
+}
+
+.cancel-button {
+  background-color: #ccc;
+  color: #333;
+}
+
+.delete-button:hover {
+  background-color: #e03838;
+}
+
+.cancel-button:hover {
+  background-color: #aaa;
+}

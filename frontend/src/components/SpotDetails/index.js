@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useModal } from "../../context/Modal";
+import ReviewFormModal from "../ReviewFormModal";
 import "./SpotDetails.css";
 
 const fetchSpotDetails = async (spotId) => {
@@ -45,6 +47,33 @@ function SpotDetails() {
   const isOwner = user && spot && user.id === spot.Owner.id;
   const [hasReviewed, setHasReviewed] = useState(false);
 
+  const { setModalContent } = useModal();
+  const openModal = () => {
+    const onAfterSubmit = () => {
+      Promise.all([fetchSpotReviews(spotId)])
+        .then(([reviewsData]) => {
+          setReviews(reviewsData);
+          if (user && reviewsData.some((review) => review.userId === user.id)) {
+            setHasReviewed(true);
+          } else {
+            setHasReviewed(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching spot data or reviews:", error);
+        });
+    };
+    setModalContent(
+      <ReviewFormModal
+        user={user}
+        isOwner={isOwner}
+        hasReviewed={hasReviewed}
+        spotId={spotId}
+        onAfterSubmit={onAfterSubmit}
+      />
+    );
+  };
+
   useEffect(() => {
     Promise.all([fetchSpotDetails(spotId), fetchSpotReviews(spotId)])
       .then(([spotData, reviewsData]) => {
@@ -76,20 +105,16 @@ function SpotDetails() {
     );
   };
 
-  console.log("User:", user);
-  console.log("Is Owner:", isOwner);
-  console.log("Has Reviewed:", hasReviewed);
-
   return (
     <div className="spot-details-container">
       <div className="spot-main-content">
-        <h1 class="spot-details-title">{spot.name}</h1>
+        <h1 className="spot-details-title">{spot.name}</h1>
         <p>
           Location: {spot.city}, {spot.state}, {spot.country}
         </p>
 
         <div className="spot-images">
-          <div class="large-image-wrapper">
+          <div className="large-image-wrapper">
             <img
               src={spot.SpotImages[0]?.url}
               alt={`Main Spot: ${spot.name}`}
@@ -99,9 +124,8 @@ function SpotDetails() {
 
           <div className="small-images">
             {spot.SpotImages.slice(1, 5).map((image, idx) => (
-              <div class="small-image-wrapper">
+              <div key={idx} className="small-image-wrapper">
                 <img
-                  key={idx}
                   src={image.url}
                   alt={`Spot details ${idx + 1}`}
                   className="small-image"
@@ -140,9 +164,7 @@ function SpotDetails() {
         <div>
           <div className="review-button-container">
             {user && !isOwner && !hasReviewed && (
-              <button onClick={() => alert("Post Review Feature Coming Soon")}>
-                Post Your Review
-              </button>
+              <button onClick={() => openModal()}>Post Your Review</button>
             )}
           </div>
           {reviews.length > 0 ? (

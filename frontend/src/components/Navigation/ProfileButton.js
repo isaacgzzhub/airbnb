@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useDispatch } from 'react-redux';
-import * as sessionActions from '../../store/session';
-import OpenModalMenuItem from './OpenModalMenuItem';
-import LoginFormModal from '../LoginFormModal';
-import SignupFormModal from '../SignupFormModal';
-import './Navigation.css';
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import * as sessionActions from "../../store/session";
+import OpenModalMenuItem from "./OpenModalMenuItem";
+import LoginFormModal from "../LoginFormModal";
+import SignupFormModal from "../SignupFormModal";
+import "./Navigation.css";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
 
@@ -25,7 +27,7 @@ function ProfileButton({ user }) {
       }
     };
 
-    document.addEventListener('click', closeMenu);
+    document.addEventListener("click", closeMenu);
 
     return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
@@ -42,16 +44,23 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         <button onClick={openMenu}>
           <i className="fas fa-user-circle" />
         </button>
         <ul className={ulClassName} ref={ulRef}>
           {user ? (
             <>
-              <li>Hello, {user.firstName} {user.lastName}</li>
+              <li>
+                Hello, {user.firstName} {user.lastName}
+              </li>
               <li>{user.username}</li>
               <li>{user.email}</li>
+              <li>
+                <button onClick={() => history.push(`/spots/current`)}>
+                  Manage Spots
+                </button>
+              </li>
               <li>
                 <button onClick={logout}>Log Out</button>
               </li>
