@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SpotTile from "../SpotTile";
+import { csrfFetch } from "../../store/csrf";
 import "./SpotManagementPage.css";
 
 const fetchCurrentUserSpots = async () => {
   try {
-    const response = await fetch(`/api/spots/current`);
+    const response = await csrfFetch(`/api/spots/current`);
 
     if (!response.ok) {
       throw response;
@@ -34,6 +35,11 @@ function SpotManagementPage() {
     fetchUserSpots();
   }, []);
 
+  const handleSpotDeleted = (deletedSpotId) => {
+    const updatedSpots = spots.filter((spot) => spot.id !== deletedSpotId);
+    setSpots(updatedSpots);
+  };
+
   return (
     <div className="spot-management-container">
       <h2>Manage Spot</h2>
@@ -43,7 +49,14 @@ function SpotManagementPage() {
       {spots.length === 0 ? (
         <span>No Spots</span>
       ) : (
-        spots.map((spot) => <SpotTile key={spot.id} spot={spot} user={user} />)
+        spots.map((spot) => (
+          <SpotTile
+            key={spot.id}
+            spot={spot}
+            user={user}
+            onSpotDeleted={handleSpotDeleted}
+          />
+        ))
       )}
     </div>
   );

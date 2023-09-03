@@ -3,11 +3,12 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useModal } from "../../context/Modal";
 import ReviewFormModal from "../ReviewFormModal";
+import { csrfFetch } from "../../store/csrf";
 import "./SpotDetails.css";
 
 const fetchSpotDetails = async (spotId) => {
   try {
-    const response = await fetch(`/api/spots/${spotId}`);
+    const response = await csrfFetch(`/api/spots/${spotId}`);
 
     if (!response.ok) {
       throw response;
@@ -22,7 +23,7 @@ const fetchSpotDetails = async (spotId) => {
 
 const fetchSpotReviews = async (spotId) => {
   try {
-    const response = await fetch(`/api/spots/${spotId}/reviews`);
+    const response = await csrfFetch(`/api/spots/${spotId}/reviews`);
 
     if (!response.ok) {
       throw response;
@@ -46,6 +47,18 @@ function SpotDetails() {
   const user = useSelector((state) => state.session.user);
   const isOwner = user && spot && user.id === spot.Owner.id;
   const [hasReviewed, setHasReviewed] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [reviewToDelete, setReviewToDelete] = useState(null);
+
+  const handleDeleteClick = (reviewId) => {
+    setReviewToDelete(reviewId);
+    setShowDeleteModal(true);
+  };
+
+  const handleCancelDelete = () => {
+    setReviewToDelete(null);
+    setShowDeleteModal(false);
+  };
 
   const { setModalContent } = useModal();
   const openModal = () => {
@@ -103,6 +116,31 @@ function SpotDetails() {
         {spot.numReviews > 1 ? "" : ""}
       </span>
     );
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      const response = await csrfFetch(`/api/reviews/${reviewToDelete}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          // Add authentication headers if necessary
+        },
+      });
+
+      if (response.ok) {
+        const updatedReviews = reviews.filter(
+          (review) => review.id !== reviewToDelete
+        );
+        setReviews(updatedReviews);
+        setShowDeleteModal(false);
+      } else {
+        const data = await response.json();
+        console.error("Error deleting review:", data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting the review:", error);
+    }
   };
 
   return (
@@ -178,6 +216,11 @@ function SpotDetails() {
                   {review.ReviewImages && review.ReviewImages[0] && (
                     <img src={review.ReviewImages[0].url} alt="Review" />
                   )}
+                  {user && user.id === review.userId && (
+                    <button onClick={() => handleDeleteClick(review.id)}>
+                      Delete
+                    </button>
+                  )}
                 </div>
               </div>
             ))
@@ -186,6 +229,20 @@ function SpotDetails() {
           ) : null}
         </div>
       </div>
+      {showDeleteModal && (
+        <div className="modal-background">
+          <div className="modal">
+            <h2>Confirm Delete</h2>
+            <p>Are you sure you want to delete this review?</p>
+            <button onClick={handleConfirmDelete} className="delete-button">
+              Yes, Delete Review
+            </button>
+            <button onClick={handleCancelDelete} className="cancel-button">
+              No, Keep Review
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -21,6 +21,7 @@ const UpdateSpotForm = () => {
   const [mainImageUrl, setMainImageUrl] = useState(""); // This would ideally be fetched
   const [optionalImageURLs, setOptionalImageURLs] = useState(Array(3).fill("")); // This would ideally be fetched
 
+  const [imageIds, setImageIds] = useState([]);
   const [errors, setErrors] = useState({});
 
   function validateForm() {
@@ -60,7 +61,9 @@ const UpdateSpotForm = () => {
   useEffect(() => {
     const getData = async () => {
       const spot = await getSpot(spotId);
+      setImageIds(spot.SpotImages.map((image) => image.id));
       const previewImage = spot.SpotImages.find((image) => image.preview);
+      const otherImages = spot.SpotImages.filter((image) => !image.preview);
       // Using the spot prop to set initial values for state
       setCountry(spot.country);
       setStreetAddress(spot.address);
@@ -71,9 +74,12 @@ const UpdateSpotForm = () => {
       setDescription(spot.description);
       setSpotTitle(spot.name);
       setPrice(spot.price);
-      setPreviewImageUrl(previewImage.url); // This would ideally be fetched
-      setMainImageUrl(""); // This would ideally be fetched
-      setOptionalImageURLs(Array(3).fill("")); // This would ideally be fetched
+      setPreviewImageUrl(previewImage.url);
+      if (otherImages.length >= 1) {
+        const mainImage = otherImages.shift();
+        setMainImageUrl(mainImage.url);
+      }
+      setOptionalImageURLs(otherImages.map((image) => image.url));
     };
 
     getData();
@@ -86,6 +92,22 @@ const UpdateSpotForm = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const responseData = await response.json();
+      throw new Error(responseData.message);
+    }
+
+    return await response.json();
+  }
+
+  async function deleteImageToSpot(spotId, imageId) {
+    const response = await csrfFetch(`/api/spot-images/${imageId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
     if (!response.ok) {
@@ -141,24 +163,32 @@ const UpdateSpotForm = () => {
         throw new Error("Failed to update the spot.");
       }
 
+      const imageDeletePromises = imageIds.map((imageId) =>
+        deleteImageToSpot(spotId, imageId)
+      );
+      const deletedImages = await Promise.all(imageDeletePromises);
+      if (deletedImages.some((img) => !img)) {
+        throw new Error("Failed to upload some of the images.");
+      }
+
       // 2. Update Images for the spot
-      // const imageEndpoints = [
-      //   { url: previewImageUrl, preview: true },
-      //   { url: mainImageUrl, preview: false },
-      //   ...optionalImageURLs
-      //     .filter((imgUrl) => imgUrl)
-      //     .map((imgUrl) => ({ url: imgUrl, preview: false })),
-      // ];
+      const imageEndpoints = [
+        { url: previewImageUrl, preview: true },
+        { url: mainImageUrl, preview: false },
+        ...optionalImageURLs
+          .filter((imgUrl) => imgUrl)
+          .map((imgUrl) => ({ url: imgUrl, preview: false })),
+      ];
 
-      // const imageUploadPromises = imageEndpoints.map((imageData) =>
-      //   addImageToSpot(spotId, imageData.url, imageData.preview)
-      // );
+      const imageUploadPromises = imageEndpoints.map((imageData) =>
+        addImageToSpot(spotId, imageData.url, imageData.preview)
+      );
 
-      // const uploadedImages = await Promise.all(imageUploadPromises);
+      const uploadedImages = await Promise.all(imageUploadPromises);
 
-      // if (uploadedImages.some((img) => !img)) {
-      //   throw new Error("Failed to upload some of the images.");
-      // }
+      if (uploadedImages.some((img) => !img)) {
+        throw new Error("Failed to upload some of the images.");
+      }
 
       // Finally, navigate to the spot's detail page
       history.push(`/spots/${spotId}`);

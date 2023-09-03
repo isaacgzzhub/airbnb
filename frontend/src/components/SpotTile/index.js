@@ -33,9 +33,10 @@
 
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
+import { csrfFetch } from "../../store/csrf";
 import "./SpotTile.css";
 
-function SpotTile({ spot, user }) {
+function SpotTile({ spot, user, onSpotDeleted }) {
   const ratingDisplay =
     spot.avgRating && spot.avgRating > 0 ? spot.avgRating.toFixed(1) : "New";
 
@@ -53,9 +54,30 @@ function SpotTile({ spot, user }) {
   };
 
   const handleConfirmDelete = async () => {
-    // TODO: Call the API endpoint to delete the spot
-    // If successful, remove the spot from the UI or redirect to another page.
-    setShowDeleteModal(false);
+    try {
+      const response = await csrfFetch(`/api/spots/${spot.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          // Add authentication headers if needed
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // If deletion was successful, remove the spot from the UI
+        // This can be achieved in various ways - either by directly manipulating
+        // the DOM, or by refetching the list of spots. Here's one way:
+        // Call a callback from parent component to update the list of spots.
+        onSpotDeleted(spot.id);
+        setShowDeleteModal(false);
+      } else {
+        console.error("Error deleting spot:", data.message);
+      }
+    } catch (error) {
+      console.error("There was an error deleting the spot:", error);
+    }
   };
 
   const handleCancelDelete = () => {
