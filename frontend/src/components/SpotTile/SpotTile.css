@@ -19,7 +19,15 @@
   margin-top: 0.5rem;
 }
 
-.spot-name, .spot-city-state, .spot-price {
+.spot-name,
+.spot-city-state,
+.spot-price {
   display: block;
   margin: 0.2rem 0;
+}
+
+.spot-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }

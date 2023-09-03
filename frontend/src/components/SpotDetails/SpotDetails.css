@@ -1,0 +1,147 @@
+.spot-details-container {
+  width: 80%;
+  margin: 2rem auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.spot-images {
+  display: flex;
+  width: 100%;
+  max-height: 500px;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+
+.large-image-wrapper {
+  flex: 2;
+  max-width: 50%;
+  display: inline-block;
+}
+
+.large-image {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.small-image-wrapper {
+  flex: 2;
+  display: inline-block;
+  max-height: 200px;
+  width: inherit;
+}
+
+.small-images {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.small-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+p {
+  margin: 1rem 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+h1.spot-details-title {
+  font-size: 2rem;
+  color: #444;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+h2.spot-review-details {
+  text-align: left;
+}
+
+.spot-callout-box {
+  width: 25%;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.spot-price {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.per-night-label {
+  font-size: 16px;
+  color: #777;
+}
+
+.reserve-button {
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+.description {
+  display: flex;
+  justify-content: space-between;
+}
+
+.spot-callout-box {
+  flex: 0 0 30%;
+  padding-left: 10px;
+  display: flex;
+  align-items: stretch;
+}
+
+.price-rating {
+  display: flex;
+  justify-content: space-between;
+}
+
+.spot-rating {
+  display: flex;
+  align-items: center;
+}
+
+.review-item {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 16px 0;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-image {
+  max-width: 150px;
+  margin-top: 8px;
+}
+
+.review-button-container {
+  display: flex;
+  justify-content: left;
+}
