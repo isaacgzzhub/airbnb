@@ -21,13 +21,11 @@ const fetchCurrentUserSpots = async () => {
 };
 
 function SpotManagementPage() {
-  // const { spotId } = useParams();
   const [spots, setSpots] = useState([]);
   const user = useSelector((state) => state.session.user);
 
   useEffect(() => {
     async function fetchUserSpots() {
-      // Implement fetching of spots. This is just a placeholder.
       const response = await fetchCurrentUserSpots();
       setSpots(response.Spots);
     }

@@ -6,22 +6,20 @@ import Navigation from "./components/Navigation";
 import LandingPage from "./components/LandingPage";
 import SpotDetails from "./components/SpotDetails";
 import CreateSpotForm from "./components/CreateSpotForm";
-import DeleteConfirmationModal from "./components/DeleteConfirmationModal"; // Import the new component
+import DeleteConfirmationModal from "./components/DeleteConfirmationModal";
 import SpotManagementPage from "./components/SpotManagementPage";
 import UpdateSpotForm from "./components/UpdateSpotForm";
 
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // State to control the visibility of the modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);
 
   const handleDelete = () => {
-    // Your delete logic here. For instance:
-    // dispatch(deleteSpot(spotId));
     setShowDeleteModal(false);
   };
 
@@ -46,7 +44,6 @@ function App() {
             </Route>
           </Switch>
 
-          {/* Conditionally render the DeleteConfirmationModal */}
           {showDeleteModal && (
             <DeleteConfirmationModal
               onDelete={handleDelete}

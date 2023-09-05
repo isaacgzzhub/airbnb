@@ -1,34 +1,28 @@
-/* TODO Add site wide styles */
-
-/* Reset some default margins and padding to ensure consistency */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Set a neutral background color and text properties */
 body {
-  background-color: #f4f4f4; /* This is a light grey. Adjust as you see fit. */
-  font-family: 'Arial', sans-serif; /* I'm using Arial as an example, consider using fonts from Google Fonts or another typeface you prefer */
-  color: #333; /* Dark grey for text, enhancing readability */
+  background-color: #f4f4f4;
+  font-family: "Arial", sans-serif;
+  color: #333;
   line-height: 1.6;
 }
 
-/* Consider adding a main container if you have one in your App component */
 .main-container {
   max-width: 1200px;
-  margin: 0 auto; /* This will center the container */
+  margin: 0 auto;
   padding: 20px;
 }
 
-/* Add some space for ul and li elements */
-ul, li {
+ul,
+li {
   list-style-type: none;
   padding: 5px 0;
 }
 
-/* If you have links, set a standard color and hover effect */
 a {
   text-decoration: none;
   color: #333;
@@ -38,7 +32,6 @@ a:hover {
   color: #555;
 }
 
-/* If you use buttons frequently, set a default style */
 button {
   background-color: #333;
   color: #fff;
@@ -53,22 +46,21 @@ button:hover {
   background-color: #555;
 }
 
-/* Modal styles (If you want a backdrop effect) */
 .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center; /* vertically center */
-  justify-content: center; /* horizontally center */
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-content {
   background-color: #fff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* subtle shadow for depth */
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
 }

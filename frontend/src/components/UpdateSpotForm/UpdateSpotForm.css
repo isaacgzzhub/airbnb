@@ -38,7 +38,7 @@ button:hover {
 .section-caption {
   font-size: 16px;
   margin-bottom: 20px;
-  color: #555; /* Some subtle color for caption */
+  color: #555;
 }
 
 .description-textarea {
@@ -48,7 +48,7 @@ button:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-  resize: vertical; /* Allows the user to resize the textarea vertically */
+  resize: vertical;
 }
 
 .section-container {

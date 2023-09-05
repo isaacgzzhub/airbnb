@@ -7,9 +7,9 @@ h1 {
 
 form {
   display: flex;
-  flex-direction: column; /* Stacks form elements vertically */
-  width: 400px; /* Adjust as needed */
-  margin: 0 auto; /* Centers the form horizontally */
+  flex-direction: column;
+  width: 400px;
+  margin: 0 auto;
 }
 
 label {
@@ -17,12 +17,12 @@ label {
   margin-bottom: 10px;
   color: #555;
   display: flex;
-  flex-direction: column; /* Stacks label text and input vertically */
+  flex-direction: column;
 }
 
 input {
   padding: 10px;
-  margin-top: 5px; /* Spacing between label text and input */
+  margin-top: 5px;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -30,8 +30,8 @@ input {
 }
 
 input:focus {
-  outline: none; /* Removes default focus outline */
-  border-color: #007BFF; /* Adjust the focus border color as needed */
+  outline: none;
+  border-color: #007bff;
 }
 
 p {
@@ -44,7 +44,7 @@ p {
 button {
   padding: 10px 20px;
   font-size: 16px;
-  background-color: #007BFF; /* Change this to match your theme's color */
+  background-color: #007bff;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -53,5 +53,5 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3; /* A darker shade for hover effect */
+  background-color: #0056b3;
 }

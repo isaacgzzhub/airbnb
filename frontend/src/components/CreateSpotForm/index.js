@@ -66,7 +66,6 @@ const CreateSpotForm = () => {
     if (!validateForm()) return;
 
     try {
-      // 1. Create Spot
       const spotData = {
         address: streetAddress,
         city,
@@ -80,28 +79,19 @@ const CreateSpotForm = () => {
       };
       const { id: newSpotId } = await createSpot(spotData);
 
-      // 2. Add Images to the newly created spot
       const imageEndpoints = [
         { url: previewImageUrl, preview: true },
         { url: mainImageUrl, preview: false },
         ...optionalImageURLs
-          .filter((imgUrl) => imgUrl) // filter out empty URLs
+          .filter((imgUrl) => imgUrl)
           .map((imgUrl) => ({ url: imgUrl, preview: false })),
       ];
-
-      // Upload images in parallel for better performance
-      // await Promise.all(
-      //   imageEndpoints.map((imageData) =>
-      //     postToAPI(`/api/spots/${newSpotId}/images`, imageData)
-      //   )
-      // );
 
       for (let index = 0; index < imageEndpoints.length; index++) {
         const imageData = imageEndpoints[index];
         await postToAPI(`/api/spots/${newSpotId}/images`, imageData);
       }
 
-      // Finally, navigate to the spot's detail page
       history.push(`/spots/${newSpotId}`);
     } catch (error) {
       console.error("Error creating spot:", error);
@@ -326,7 +316,6 @@ const CreateSpotForm = () => {
                       }}
                       className="image-input"
                     />
-                    {/* No error checks for optional URLs since they're... optional. */}
                   </div>
                 ))}
             </div>
