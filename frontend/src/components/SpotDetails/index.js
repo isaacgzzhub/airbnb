@@ -5,6 +5,7 @@ import { useModal } from "../../context/Modal";
 import ReviewFormModal from "../ReviewFormModal";
 import { csrfFetch } from "../../store/csrf";
 import "./SpotDetails.css";
+import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
 const fetchSpotDetails = async (spotId) => {
   try {
@@ -47,34 +48,39 @@ function SpotDetails() {
   const user = useSelector((state) => state.session.user);
   const isOwner = user && spot && user.id === spot.Owner.id;
   const [hasReviewed, setHasReviewed] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [reviewToDelete, setReviewToDelete] = useState(null);
+  // const [showDeleteModal, setShowDeleteModal] = useState(false);
+  // const [reviewToDelete, setReviewToDelete] = useState(null);
 
   const handleDeleteClick = (reviewId) => {
-    setReviewToDelete(reviewId);
-    setShowDeleteModal(true);
+    // setReviewToDelete(reviewId);
+    // setShowDeleteModal(true);
+    openDeleteReviewModal(reviewId);
   };
 
-  const handleCancelDelete = () => {
-    setReviewToDelete(null);
-    setShowDeleteModal(false);
+  // const handleCancelDelete = () => {
+  //   setReviewToDelete(null);
+  //   setShowDeleteModal(false);
+  // };
+
+  const refreshSpotReviews = () => {
+    Promise.all([fetchSpotReviews(spotId)])
+      .then(([reviewsData]) => {
+        setReviews(reviewsData);
+        if (user && reviewsData.some((review) => review.userId === user.id)) {
+          setHasReviewed(true);
+        } else {
+          setHasReviewed(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching spot data or reviews:", error);
+      });
   };
 
-  const { setModalContent } = useModal();
-  const openModal = () => {
+  const { setModalContent, closeModal } = useModal();
+  const openReviewModal = () => {
     const onAfterSubmit = () => {
-      Promise.all([fetchSpotReviews(spotId)])
-        .then(([reviewsData]) => {
-          setReviews(reviewsData);
-          if (user && reviewsData.some((review) => review.userId === user.id)) {
-            setHasReviewed(true);
-          } else {
-            setHasReviewed(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching spot data or reviews:", error);
-        });
+      refreshSpotReviews();
     };
     setModalContent(
       <ReviewFormModal
@@ -84,6 +90,33 @@ function SpotDetails() {
         spotId={spotId}
         onAfterSubmit={onAfterSubmit}
       />
+    );
+  };
+
+  const openDeleteReviewModal = (reviewId) => {
+    const onDelete = async () => {
+      try {
+        const response = await csrfFetch(`/api/reviews/${reviewId}`, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            // Add authentication headers if necessary
+          },
+        });
+
+        if (response.ok) {
+          refreshSpotReviews();
+          closeModal();
+        } else {
+          const data = await response.json();
+          console.error("Error deleting review:", data.message);
+        }
+      } catch (error) {
+        console.error("Error deleting the review:", error);
+      }
+    };
+    setModalContent(
+      <DeleteConfirmationModal onCancel={closeModal} onDelete={onDelete} />
     );
   };
 
@@ -118,38 +151,38 @@ function SpotDetails() {
     );
   };
 
-  const handleConfirmDelete = async () => {
-    try {
-      const response = await csrfFetch(`/api/reviews/${reviewToDelete}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          // Add authentication headers if necessary
-        },
-      });
+  // const handleConfirmDelete = async () => {
+  //   try {
+  //     const response = await csrfFetch(`/api/reviews/${reviewToDelete}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         // Add authentication headers if necessary
+  //       },
+  //     });
 
-      if (response.ok) {
-        const updatedReviews = reviews.filter(
-          (review) => review.id !== reviewToDelete
-        );
-        setReviews(updatedReviews);
-        setShowDeleteModal(false);
-      } else {
-        const data = await response.json();
-        console.error("Error deleting review:", data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting the review:", error);
-    }
-  };
+  //     if (response.ok) {
+  //       const updatedReviews = reviews.filter(
+  //         (review) => review.id !== reviewToDelete
+  //       );
+  //       setReviews(updatedReviews);
+  //       setShowDeleteModal(false);
+  //     } else {
+  //       const data = await response.json();
+  //       console.error("Error deleting review:", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error deleting the review:", error);
+  //   }
+  // };
 
   return (
     <div className="spot-details-container">
       <div className="spot-main-content">
         <h1 className="spot-details-title">{spot.name}</h1>
-        <p>
-          Location: {spot.city}, {spot.state}, {spot.country}
-        </p>
+        <h3 className="h3-spot-details">
+          {spot.city}, {spot.state}, {spot.country}
+        </h3>
 
         <div className="spot-images">
           <div className="large-image-wrapper">
@@ -174,9 +207,9 @@ function SpotDetails() {
         </div>
         <div className="description">
           <div className="title-description">
-            <p>
+            <h2 className="h2-spot-details">
               Hosted by {spot.Owner.firstName}, {spot.Owner.lastName}
-            </p>
+            </h2>
 
             <p>{spot.description}</p>
           </div>
@@ -197,27 +230,37 @@ function SpotDetails() {
             </button>
           </div>
         </div>
+        <hr />
         <h2 className="spot-review-details">{renderReviewSummary()}</h2>
-
         <div>
           <div className="review-button-container">
             {user && !isOwner && !hasReviewed && (
-              <button onClick={() => openModal()}>Post Your Review</button>
+              <button
+                className="post-review-button"
+                onClick={() => openReviewModal()}
+              >
+                Post Your Review
+              </button>
             )}
           </div>
           {reviews.length > 0 ? (
             reviews.map((review) => (
               <div key={review.id} className="review-item">
                 <strong>{review.User.firstName}</strong>
-                <p>{formatDate(review.createdAt)}</p>{" "}
+                <p className="review-date">
+                  {formatDate(review.createdAt)}
+                </p>{" "}
                 {/* Formatting the date here */}
-                <p>{review.review}</p>
+                <p className="review-description">{review.review}</p>
                 <div className="review-image">
-                  {review.ReviewImages && review.ReviewImages[0] && (
+                  {/* {review.ReviewImages && review.ReviewImages[0] && (
                     <img src={review.ReviewImages[0].url} alt="Review" />
-                  )}
+                  )} */}
                   {user && user.id === review.userId && (
-                    <button onClick={() => handleDeleteClick(review.id)}>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDeleteClick(review.id)}
+                    >
                       Delete
                     </button>
                   )}
@@ -229,7 +272,7 @@ function SpotDetails() {
           ) : null}
         </div>
       </div>
-      {showDeleteModal && (
+      {/* {showDeleteModal && (
         <div className="modal-background">
           <div className="modal">
             <h2>Confirm Delete</h2>
@@ -242,7 +285,7 @@ function SpotDetails() {
             </button>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

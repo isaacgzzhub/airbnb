@@ -1,4 +1,4 @@
-.delete-confirmation-modal {
+.confirm-delete-spot-modal {
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
@@ -12,8 +12,8 @@
   margin-top: 20px;
 }
 
-.delete-button-review,
-.cancel-button-review {
+.delete-button-spot,
+.cancel-button-spot {
   padding: 10px 15px;
   border-radius: 4px;
   cursor: pointer;
@@ -22,12 +22,12 @@
   font-size: 17px;
 }
 
-.delete-button-review {
+.delete-button-spot {
   background-color: #ff4b4b;
   color: #fff;
 }
 
-.cancel-button-review {
+.cancel-button-spot {
   background-color: #ccc;
   color: #333;
 }

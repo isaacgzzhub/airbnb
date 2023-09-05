@@ -37,6 +37,7 @@ button:hover {
 
 .section-caption {
   font-size: 16px;
+  margin-top: 0px;
   margin-bottom: 20px;
   color: #555; /* Some subtle color for caption */
 }
@@ -98,4 +99,71 @@ input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+h3.create-spot-headers {
+  text-align: left;
+  margin: 0px;
+}
+
+.create-new-spot-form {
+  width: 600px;
+}
+
+.city-state-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.create-new-spot-city {
+  flex-grow: 1;
+}
+
+.create-new-spot-state {
+  width: 35%;
+}
+
+.comma-separator {
+  margin: 7px;
+  display: grid;
+  align-self: end;
+}
+
+.city-comma-wrapper {
+  width: 65%;
+  display: flex;
+}
+
+.latitude-longitude-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
+
+.create-new-spot-latitude {
+  flex-grow: 1;
+}
+
+.create-new-spot-longitude {
+  width: 50%;
+}
+
+.latitude-comma-wrapper {
+  width: 50%;
+  display: flex;
+}
+
+.price-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.dollar-sign {
+  margin-right: 5px; /* adjust as necessary for spacing */
+}
+
+.name-error-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-bottom: 0px;
 }

@@ -201,17 +201,19 @@ const UpdateSpotForm = () => {
     <div>
       <h2>Update Your Spot</h2>
       <div>
-        <form onSubmit={handleSubmit}>
-          <h3>Where's your place located?</h3>
+        <form className="create-new-spot-form" onSubmit={handleSubmit}>
+          <h3 className="create-spot-headers">Where's your place located?</h3>
           <p className="section-caption">
             Guests will only get your exact address once they booked a
             reservation.
           </p>
           <label>
-            Country:
-            {errors.country && (
-              <div className="error-message">{errors.country}</div>
-            )}
+            <label className="name-error-wrapper">
+              Country
+              {errors.country && (
+                <div className="error-message">{errors.country}</div>
+              )}
+            </label>
             <input
               type="text"
               placeholder="Country"
@@ -220,10 +222,12 @@ const UpdateSpotForm = () => {
             />
           </label>
           <label>
-            Street Address:
-            {errors.streetAddress && (
-              <div className="error-message">{errors.streetAddress}</div>
-            )}
+            <label className="name-error-wrapper">
+              Street Address
+              {errors.streetAddress && (
+                <div className="error-message">{errors.streetAddress}</div>
+              )}
+            </label>
             <input
               type="text"
               placeholder="Street Address"
@@ -231,54 +235,77 @@ const UpdateSpotForm = () => {
               onChange={(e) => setStreetAddress(e.target.value)}
             />
           </label>
-          <label>
-            City:
-            {errors.city && <div className="error-message">{errors.city}</div>}
-            <input
-              type="text"
-              placeholder="City"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-            />
-          </label>
-          <label>
-            State:
-            {errors.state && (
-              <div className="error-message">{errors.state}</div>
-            )}
-            <input
-              type="text"
-              placeholder="State"
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-            />
-          </label>
-          <label>
-            Latitude:
-            {errors.latitude && (
-              <div className="error-message">{errors.latitude}</div>
-            )}
-            <input
-              type="text"
-              placeholder="Latitude"
-              value={latitude}
-              onChange={(e) => setLatitude(e.target.value)}
-            />
-          </label>
-          <label>
-            Longitude:
-            {errors.longitude && (
-              <div className="error-message">{errors.longitude}</div>
-            )}
-            <input
-              type="text"
-              placeholder="Longitude"
-              value={longitude}
-              onChange={(e) => setLongitude(e.target.value)}
-            />
-          </label>
+          <div className="city-state-wrapper">
+            <div className="city-comma-wrapper">
+              <label className="create-new-spot-city">
+                <label className="name-error-wrapper">
+                  City:
+                  {errors.city && (
+                    <div className="error-message">{errors.city}</div>
+                  )}
+                </label>
+                <input
+                  type="text"
+                  placeholder="City"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
+              </label>
+              <span className="comma-separator">,</span>
+            </div>
+            <label className="create-new-spot-state">
+              <label className="name-error-wrapper">
+                State
+                {errors.state && (
+                  <div className="error-message">{errors.state}</div>
+                )}
+              </label>
+              <input
+                type="text"
+                placeholder="State"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+              />
+            </label>
+          </div>
+          <div className="latitude-longitude-wrapper">
+            <div className="latitude-comma-wrapper">
+              <label className="create-new-spot-latitude">
+                <label className="name-error-wrapper">
+                  Latitude
+                  {errors.latitude && (
+                    <div className="error-message">{errors.latitude}</div>
+                  )}
+                </label>
+                <input
+                  type="text"
+                  placeholder="Latitude"
+                  value={latitude}
+                  onChange={(e) => setLatitude(e.target.value)}
+                />
+              </label>
+              <span className="comma-separator">,</span>
+            </div>
+            <label className="create-new-spot-longitude">
+              <label className="name-error-wrapper">
+                Longitude
+                {errors.longitude && (
+                  <div className="error-message">{errors.longitude}</div>
+                )}
+              </label>
+              <input
+                type="text"
+                placeholder="Longitude"
+                value={longitude}
+                onChange={(e) => setLongitude(e.target.value)}
+              />
+            </label>
+          </div>
+          <hr />
           <div className="section-container">
-            <h2>Describe your place to guests</h2>
+            <h3 className="create-spot-headers">
+              Describe your place to guests
+            </h3>
             <p className="section-caption">
               Mention the best features of your space, any special amenities
               like fast wifi or parking, and what you love about the
@@ -296,8 +323,11 @@ const UpdateSpotForm = () => {
               <div className="error-message">{errors.description}</div>
             )}
           </div>
+          <hr />
           <div className="section-container">
-            <h2>Create a title for your spot</h2>
+            <h3 className="create-spot-headers">
+              Create a title for your spot
+            </h3>
             <p className="section-caption">
               Catch guests' attention with a spot title that highlights what
               makes your place special.
@@ -313,26 +343,35 @@ const UpdateSpotForm = () => {
               <div className="error-message">{errors.spotTitle}</div>
             )}
           </div>
+          <hr />
           <div className="section-container">
-            <h2>Set a base price for your spot</h2>
+            <h3 className="create-spot-headers">
+              Set a base price for your spot
+            </h3>
             <p className="section-caption">
               Competitive pricing can help your listing stand out and rank
               higher in search results.
             </p>
-            <input
-              type="number"
-              placeholder="Price per night (USD)"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              className="spot-price-input"
-              min="0"
-            />
+            <div className="price-wrapper">
+              <span className="dollar-sign">$</span>
+              <input
+                type="number"
+                placeholder="Price per night (USD)"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="spot-price-input"
+                min="0"
+              />
+            </div>
             {errors.price && (
               <div className="error-message">{errors.price}</div>
             )}
           </div>
+          <hr />
           <div className="section-container">
-            <h2>Liven up your spot with photos</h2>
+            <h3 className="create-spot-headers">
+              Liven up your spot with photos
+            </h3>
             <p className="section-caption">
               Submit a link to at least one photo to publish your spot.
             </p>
@@ -381,7 +420,7 @@ const UpdateSpotForm = () => {
                 ))}
             </div>
           </div>
-
+          <hr />
           <button type="submit">Update Spot</button>
         </form>
       </div>

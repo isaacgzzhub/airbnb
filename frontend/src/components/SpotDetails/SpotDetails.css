@@ -32,7 +32,7 @@
 .small-image-wrapper {
   flex: 2;
   display: inline-block;
-  max-height: 200px;
+  max-height: 250px;
   width: inherit;
 }
 
@@ -63,6 +63,8 @@ h1.spot-details-title {
 
 h2.spot-review-details {
   text-align: left;
+  margin-top: 20px;
+  margin-bottom: 0px;
 }
 
 .spot-callout-box {
@@ -109,7 +111,7 @@ h2.spot-review-details {
 }
 
 .spot-callout-box {
-  flex: 0 0 30%;
+  flex: 0 0 32%;
   padding-left: 10px;
   display: flex;
   align-items: stretch;
@@ -136,6 +138,16 @@ h2.spot-review-details {
   gap: 8px;
 }
 
+.review-date {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.review-description {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
 .review-image {
   max-width: 150px;
   margin-top: 8px;
@@ -144,4 +156,38 @@ h2.spot-review-details {
 .review-button-container {
   display: flex;
   justify-content: left;
+}
+
+.h2-spot-details {
+  text-align: left;
+  margin-top: 20px;
+}
+
+.h3-spot-details {
+  text-align: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.post-review-button {
+  box-sizing: border-box;
+  width: auto;
+  font-size: 16px;
+  color: white;
+  background-color: grey;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-button {
+  box-sizing: border-box;
+  width: 50%;
+  font-size: inherit;
+  padding: 5px;
+  background-color: grey;
 }

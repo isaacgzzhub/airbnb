@@ -41,23 +41,28 @@ function SpotManagementPage() {
   };
 
   return (
-    <div className="spot-management-container">
-      <h2>Manage Spot</h2>
-      <Link to="/spots/new" className="create-new-spot-btn">
-        Create a New Spot
-      </Link>
-      {spots.length === 0 ? (
-        <span>No Spots</span>
-      ) : (
-        spots.map((spot) => (
-          <SpotTile
-            key={spot.id}
-            spot={spot}
-            user={user}
-            onSpotDeleted={handleSpotDeleted}
-          />
-        ))
-      )}
+    <div>
+      <div className="spot-management-header">
+        <h2 className="manage-spots-header">Manage Your Spots</h2>
+        <Link to="/spots/new" className="create-new-spot-btn">
+          Create a New Spot
+        </Link>
+      </div>
+
+      <div className="spot-management-container">
+        {spots.length === 0 ? (
+          <span>No Spots</span>
+        ) : (
+          spots.map((spot) => (
+            <SpotTile
+              key={spot.id}
+              spot={spot}
+              user={user}
+              onSpotDeleted={handleSpotDeleted}
+            />
+          ))
+        )}
+      </div>
     </div>
   );
 }

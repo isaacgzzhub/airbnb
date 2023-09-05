@@ -38,6 +38,7 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
+    history.push("/");
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
@@ -54,28 +55,34 @@ function ProfileButton({ user }) {
               <li>
                 Hello, {user.firstName} {user.lastName}
               </li>
-              <li>{user.username}</li>
               <li>{user.email}</li>
-              <li>
-                <button onClick={() => history.push(`/spots/current`)}>
+              <li className="manage-spots-wrapper">
+                <hr />
+                <button
+                  className="manage-spots-button"
+                  onClick={() => history.push(`/spots/current`)}
+                >
                   Manage Spots
                 </button>
+                <hr />
               </li>
-              <li>
-                <button onClick={logout}>Log Out</button>
+              <li className="logout-wrapper">
+                <button className="logout-button" onClick={logout}>
+                  Log Out
+                </button>
               </li>
             </>
           ) : (
             <>
               <OpenModalMenuItem
-                itemText="Log In"
-                onItemClick={closeMenu}
-                modalComponent={<LoginFormModal />}
-              />
-              <OpenModalMenuItem
                 itemText="Sign Up"
                 onItemClick={closeMenu}
                 modalComponent={<SignupFormModal />}
+              />
+              <OpenModalMenuItem
+                itemText="Log In"
+                onItemClick={closeMenu}
+                modalComponent={<LoginFormModal />}
               />
             </>
           )}

@@ -70,5 +70,18 @@ p {
 .demo-user-link {
   text-align: center;
   margin: 10px;
+  margin-top: 20px;
   cursor: pointer;
+  color: blue;
+  text-decoration: underline;
+}
+
+.login-header {
+  margin-top: 20px;
+  margin-bottom: 0px;
+}
+
+.login-error {
+  margin-top: 0px;
+  color: red;
 }

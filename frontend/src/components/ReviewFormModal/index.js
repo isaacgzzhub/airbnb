@@ -1,41 +1,3 @@
-// import React, { useState } from "react";
-// import "./ReviewFormModal.css";
-
-// function ReviewFormModal() {
-//   const [reviewContent, setReviewContent] = useState(null);
-//   const [selectedStar, setSelectedStar] = useState(null);
-
-//   return (
-//     <div class="review-form-modal">
-//       <label class="review-form-modal-title">How was your stay?</label>
-//       <textarea
-//         class="review-form-modal-input"
-//         value={reviewContent}
-//         onChange={(e) => setReviewContent(e.target.value)}
-//       ></textarea>
-
-//       <div className="star-rating">
-//         {[1, 2, 3, 4, 5].map((num) => (
-//           <span
-//             key={num}
-//             className={`star ${selectedStar >= num ? "selected" : ""}`}
-//             onClick={() => setSelectedStar(num)}
-//           >
-//             ⭐
-//           </span>
-//         ))}
-//         Stars
-//       </div>
-
-//       <button class="review-form-modal-button" type="submit">
-//         Submit Review
-//       </button>
-//     </div>
-//   );
-// }
-
-// export default ReviewFormModal;
-
 import React, { useState } from "react";
 import { csrfFetch } from "../../store/csrf";
 import { useModal } from "../../context/Modal";
@@ -52,6 +14,7 @@ function ReviewFormModal({
   const [selectedStar, setSelectedStar] = useState(null);
   const [error, setError] = useState(null);
   const { closeModal } = useModal();
+  const [hoveredStar, setHoveredStar] = useState(null);
 
   async function postReview(spotId, review, stars) {
     try {
@@ -103,8 +66,12 @@ function ReviewFormModal({
         {[1, 2, 3, 4, 5].map((num) => (
           <span
             key={num}
-            className={`star ${selectedStar >= num ? "selected" : ""}`}
+            className={`star ${
+              selectedStar >= num || hoveredStar >= num ? "selected" : ""
+            }`}
             onClick={() => setSelectedStar(num)}
+            onMouseEnter={() => setHoveredStar(num)}
+            onMouseLeave={() => setHoveredStar(null)}
           >
             ★
           </span>
