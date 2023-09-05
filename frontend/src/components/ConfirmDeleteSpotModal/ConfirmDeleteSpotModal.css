@@ -1,0 +1,41 @@
+.confirm-delete-spot-modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.delete-confirmation-buttons {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.delete-button-spot,
+.cancel-button-spot {
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-size: 17px;
+}
+
+.delete-button-spot {
+  background-color: #ff4b4b;
+  color: #fff;
+}
+
+.cancel-button-spot {
+  background-color: #ccc;
+  color: #333;
+}
+
+.delete-button:hover {
+  background-color: #e03838;
+}
+
+.cancel-button:hover {
+  background-color: #aaa;
+}

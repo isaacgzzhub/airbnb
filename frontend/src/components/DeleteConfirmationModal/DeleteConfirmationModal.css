@@ -2,31 +2,32 @@
   background-color: #fff;
   padding: 20px;
   border-radius: 5px;
-  width: 300px;
+  width: 400px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
 }
 
 .delete-confirmation-buttons {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  gap: 10px;
   margin-top: 20px;
 }
 
-.delete-button,
-.cancel-button {
+.delete-button-review,
+.cancel-button-review {
   padding: 10px 15px;
   border-radius: 4px;
   cursor: pointer;
   border: none;
   outline: none;
+  font-size: 17px;
 }
 
-.delete-button {
+.delete-button-review {
   background-color: #ff4b4b;
   color: #fff;
 }
 
-.cancel-button {
+.cancel-button-review {
   background-color: #ccc;
   color: #333;
 }

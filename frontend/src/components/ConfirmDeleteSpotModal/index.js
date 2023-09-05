@@ -34,13 +34,15 @@ function ConfirmDeleteSpotModal({ spotId, onAfterDelete }) {
   return (
     <div className="confirm-delete-spot-modal">
       <h2>Confirm Delete</h2>
-      <p>Are you sure you want to delete this spot?</p>
-      <button onClick={handleConfirmDelete} className="delete-button">
-        Yes, Delete Spot
-      </button>
-      <button onClick={handleCancelDelete} className="cancel-button">
-        No, Keep Spot
-      </button>
+      <p>Are you sure you want to delete this spot from the listings?</p>
+      <div className="delete-confirmation-buttons">
+        <button onClick={handleConfirmDelete} className="delete-button-spot">
+          Yes (Delete Spot)
+        </button>
+        <button onClick={handleCancelDelete} className="cancel-button-spot">
+          No (Keep Spot)
+        </button>
+      </div>
     </div>
   );
 }
