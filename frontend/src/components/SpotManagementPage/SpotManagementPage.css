@@ -1,10 +1,11 @@
 .spot-management-container {
-  max-width: 800px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 2rem;
   background-color: #f9f9f9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
 }
 
 .spot-management-container h2 {
@@ -31,8 +32,8 @@
 }
 
 .spot-management-container button:last-child {
-  background-color: #ccc;
-  color: #333;
+  background-color: grey;
+  color: white;
 }
 
 .spot-management-container button:last-child:hover {
@@ -61,4 +62,40 @@
   .spot-management-container section h3 {
     font-size: 1.25rem;
   }
+}
+
+.spot-management-header {
+  padding: 1rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+}
+
+.manage-spots-header {
+  text-align: left;
+  margin: 0px;
+}
+
+.create-new-spot-btn {
+  box-sizing: border-box;
+  font-size: inherit;
+  padding: 5px;
+  background-color: grey;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button.update-delete-buttons {
+  box-sizing: border-box;
+  font-size: inherit;
+  padding: 5px;
+  background-color: grey;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }

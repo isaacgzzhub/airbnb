@@ -147,9 +147,9 @@ function SpotDetails() {
     <div className="spot-details-container">
       <div className="spot-main-content">
         <h1 className="spot-details-title">{spot.name}</h1>
-        <p>
-          Location: {spot.city}, {spot.state}, {spot.country}
-        </p>
+        <h3 className="h3-spot-details">
+          {spot.city}, {spot.state}, {spot.country}
+        </h3>
 
         <div className="spot-images">
           <div className="large-image-wrapper">
@@ -174,9 +174,9 @@ function SpotDetails() {
         </div>
         <div className="description">
           <div className="title-description">
-            <p>
+            <h2 className="h2-spot-details">
               Hosted by {spot.Owner.firstName}, {spot.Owner.lastName}
-            </p>
+            </h2>
 
             <p>{spot.description}</p>
           </div>
@@ -197,27 +197,37 @@ function SpotDetails() {
             </button>
           </div>
         </div>
+        <hr />
         <h2 className="spot-review-details">{renderReviewSummary()}</h2>
-
         <div>
           <div className="review-button-container">
             {user && !isOwner && !hasReviewed && (
-              <button onClick={() => openModal()}>Post Your Review</button>
+              <button
+                className="post-review-button"
+                onClick={() => openModal()}
+              >
+                Post Your Review
+              </button>
             )}
           </div>
           {reviews.length > 0 ? (
             reviews.map((review) => (
               <div key={review.id} className="review-item">
                 <strong>{review.User.firstName}</strong>
-                <p>{formatDate(review.createdAt)}</p>{" "}
+                <p className="review-date">
+                  {formatDate(review.createdAt)}
+                </p>{" "}
                 {/* Formatting the date here */}
-                <p>{review.review}</p>
+                <p className="review-description">{review.review}</p>
                 <div className="review-image">
-                  {review.ReviewImages && review.ReviewImages[0] && (
+                  {/* {review.ReviewImages && review.ReviewImages[0] && (
                     <img src={review.ReviewImages[0].url} alt="Review" />
-                  )}
+                  )} */}
                   {user && user.id === review.userId && (
-                    <button onClick={() => handleDeleteClick(review.id)}>
+                    <button
+                      className="delete-button"
+                      onClick={() => handleDeleteClick(review.id)}
+                    >
                       Delete
                     </button>
                   )}

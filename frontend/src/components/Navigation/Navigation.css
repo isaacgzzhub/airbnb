@@ -39,7 +39,7 @@ NavLink.active {
 }
 
 .profile-dropdown li {
-  padding: 10px 15px; /* Adds spacing within dropdown items */
+  padding: 10px 5px; /* Adds spacing within dropdown items */
   cursor: pointer; /* Indicates an interactive element */
 }
 
@@ -80,27 +80,44 @@ button {
   display: block;
   width: 40px;
   height: 40px;
-  border-radius: 50%; /* this will make it a circle */
+  border-radius: 50%;
   overflow: hidden;
   text-align: center;
-  line-height: 40px; /* vertically center the icon */
+  line-height: 40px;
 }
 
 button:hover .fas.fa-user-circle {
-  color: #007bff; /* change color on hover */
+  color: #007bff;
 }
 
 .create-spot-button {
   padding: 10px 20px;
-  border: 1px solid #007bff;
   border-radius: 4px;
-  background-color: #007bff;
-  color: #ffffff;
+  color: #007bff;
   font-weight: 600;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .create-spot-button:hover {
-  background-color: #0056b3; /* Slightly darker blue on hover */
+  background-color: #0056b3;
   color: #ffffff;
+}
+
+.manage-spots-wrapper {
+  width: 100%;
+  display: block;
+}
+
+.manage-spots-button {
+  display: flex;
+  justify-content: center;
+}
+
+button.logout-button {
+  padding: 0px;
+}
+
+li.logout-wrapper {
+  padding: 0px;
+  margin-bottom: 10px;
 }
