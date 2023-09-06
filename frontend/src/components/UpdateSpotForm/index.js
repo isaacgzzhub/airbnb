@@ -7,7 +7,6 @@ const UpdateSpotForm = () => {
   const history = useHistory();
   const { spotId } = useParams();
 
-  // Using the spot prop to set initial values for state
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
@@ -17,9 +16,9 @@ const UpdateSpotForm = () => {
   const [description, setDescription] = useState("");
   const [spotTitle, setSpotTitle] = useState("");
   const [price, setPrice] = useState("");
-  const [previewImageUrl, setPreviewImageUrl] = useState(""); // This would ideally be fetched
-  const [mainImageUrl, setMainImageUrl] = useState(""); // This would ideally be fetched
-  const [optionalImageURLs, setOptionalImageURLs] = useState(Array(3).fill("")); // This would ideally be fetched
+  const [previewImageUrl, setPreviewImageUrl] = useState("");
+  const [mainImageUrl, setMainImageUrl] = useState("");
+  const [optionalImageURLs, setOptionalImageURLs] = useState(Array(3).fill(""));
 
   const [imageIds, setImageIds] = useState([]);
   const [errors, setErrors] = useState({});
@@ -64,7 +63,6 @@ const UpdateSpotForm = () => {
       setImageIds(spot.SpotImages.map((image) => image.id));
       const previewImage = spot.SpotImages.find((image) => image.preview);
       const otherImages = spot.SpotImages.filter((image) => !image.preview);
-      // Using the spot prop to set initial values for state
       setCountry(spot.country);
       setStreetAddress(spot.address);
       setCity(spot.city);
@@ -144,7 +142,6 @@ const UpdateSpotForm = () => {
     if (!validateForm()) return;
 
     try {
-      // 1. Update Spot
       const spotData = {
         address: streetAddress,
         city,
@@ -171,7 +168,6 @@ const UpdateSpotForm = () => {
         throw new Error("Failed to upload some of the images.");
       }
 
-      // 2. Update Images for the spot
       const imageEndpoints = [
         { url: previewImageUrl, preview: true },
         { url: mainImageUrl, preview: false },
@@ -190,7 +186,6 @@ const UpdateSpotForm = () => {
         throw new Error("Failed to upload some of the images.");
       }
 
-      // Finally, navigate to the spot's detail page
       history.push(`/spots/${spotId}`);
     } catch (error) {
       console.error("Error updating spot:", error);
@@ -415,7 +410,6 @@ const UpdateSpotForm = () => {
                       }}
                       className="image-input"
                     />
-                    {/* No error checks for optional URLs since they're... optional. */}
                   </div>
                 ))}
             </div>

@@ -46,7 +46,6 @@ function ReviewFormModal({
       console.log("Review posted successfully:", data);
       onAfterSubmit();
       closeModal();
-      // Handle the success scenario here
     } catch (error) {
       setError(error.message);
     }

@@ -9,7 +9,6 @@ function SpotTile({ spot, user, onSpotDeleted }) {
   const ratingDisplay =
     spot.avgRating && spot.avgRating > 0 ? spot.avgRating.toFixed(1) : "New";
 
-  // const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { setModalContent } = useModal();
   let history = useHistory();
 
@@ -26,39 +25,7 @@ function SpotTile({ spot, user, onSpotDeleted }) {
         onAfterDelete={() => onSpotDeleted(spot.id)}
       />
     );
-    // setShowDeleteModal(true);
   };
-
-  // const handleConfirmDelete = async () => {
-  //   try {
-  //     const response = await csrfFetch(`/api/spots/${spot.id}`, {
-  //       method: "DELETE",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         // Add authentication headers if needed
-  //       },
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (response.ok) {
-  //       // If deletion was successful, remove the spot from the UI
-  //       // This can be achieved in various ways - either by directly manipulating
-  //       // the DOM, or by refetching the list of spots. Here's one way:
-  //       // Call a callback from parent component to update the list of spots.
-  //       onSpotDeleted(spot.id);
-  //       setShowDeleteModal(false);
-  //     } else {
-  //       console.error("Error deleting spot:", data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("There was an error deleting the spot:", error);
-  //   }
-  // };
-
-  // const handleCancelDelete = () => {
-  //   setShowDeleteModal(false);
-  // };
 
   return (
     <div className="spot-container">
@@ -77,9 +44,7 @@ function SpotTile({ spot, user, onSpotDeleted }) {
               <span className="spot-city-state">{`${spot.city}, ${spot.state}`}</span>
               <div className="spot-rating">⭐ {ratingDisplay}</div>
             </div>
-            <span className="spot-price">{`${spot.price.toFixed(
-              2
-            )} / night`}</span>
+            <span className="spot-price">{`${spot.price} / night`}</span>
           </div>
         </div>
       </Link>
@@ -93,20 +58,6 @@ function SpotTile({ spot, user, onSpotDeleted }) {
           </button>
         </div>
       )}
-      {/* {showDeleteModal && (
-        <div className="modal-background">
-          <div className="modal">
-            <h2>Confirm Delete</h2>
-            <p>Are you sure you want to remove this spot?</p>
-            <button onClick={handleConfirmDelete} className="delete-button">
-              Yes, Delete
-            </button>
-            <button onClick={handleCancelDelete} className="cancel-button">
-              Cancel
-            </button>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 }

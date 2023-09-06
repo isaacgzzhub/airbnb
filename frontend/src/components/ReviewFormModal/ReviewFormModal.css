@@ -18,7 +18,7 @@ textarea.review-form-modal-input {
 
 .star-rating {
   display: flex;
-  gap: 8px; /* Spacing between stars */
+  gap: 8px;
   margin-top: 15px;
   justify-content: center;
   align-items: center;

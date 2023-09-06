@@ -8,7 +8,7 @@ function DeleteConfirmationModal({ onDelete, onCancel }) {
       <p>Are you sure you want to delete this review?</p>
       <div className="delete-confirmation-buttons">
         <button onClick={onDelete} className="delete-button-review">
-          Yes (Deleet Review)
+          Yes (Delete Review)
         </button>
         <button onClick={onCancel} className="cancel-button-review">
           No (Keep Review)
